@@ -1,11 +1,11 @@
 # Superset Ansible role
 
-![Logo](https://raw.githubusercontent.com/idealista/superset_role/master/logo.gif)
+![Logo](https://raw.githubusercontent.com/idealista/superset_role/main/logo.gif)
 
 [![Build Status](https://travis-ci.org/idealista/superset_role.png)](https://travis-ci.org/idealista/superset_role)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-idealista.superset_role-B62682.svg)](https://galaxy.ansible.com/idealista/superset_role)
 
-This ansible role installs [Superset](https://superset.apache.org/) in a Debian environment. It has been tested for Debian buster, stretch and jessie.
+This ansible role installs [Superset](https://superset.apache.org/) in a Debian environment. It has been tested for Debian buster.
 
 This role has been generated using the [cookiecutter](https://github.com/cookiecutter/cookiecutter) tool, you can generate a similar role that fits your needs using the this [cookiecutter template](https://github.com/idealista/cookiecutter-ansible-role).
 

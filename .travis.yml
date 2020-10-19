@@ -10,8 +10,6 @@ install:
   - pipenv sync
 env:
   jobs:
-    - MOLECULE_DISTRO=debian:jessie-slim
-    - MOLECULE_DISTRO=debian:stretch-slim
     - MOLECULE_DISTRO=debian:buster-slim
 script:
   - export MOLECULE_DISTRO=${MOLECULE_DISTRO}
