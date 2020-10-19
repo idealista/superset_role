@@ -1,0 +1,50 @@
+---
+
+- name: SUPERSET | Check if superset_config script is copied
+  stat:
+    path: "{{ superset_config_file_path }}"
+  register: superset_config_present
+
+- name: SUPERSET | Copy superset_config script
+  template:
+    src: superset_config.j2
+    dest: "{{ superset_config_file_path }}"
+    mode: 0775
+    owner: "{{ superset_user }}"
+    group: "{{ superset_group }}"
+  changed_when: not superset_config_present.stat.exists or superset_force_reinstall
+
+- name: SUPERSET | Initialize the db
+  command: "./{{ superset_exec_name }} db upgrade"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+  changed_when: false
+
+- name: Check if an admin user already exists
+  command: "./{{ superset_exec_name }} fab list-users"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+  register: check_admin_user_exitence
+  changed_when: false
+
+- name: SUPERSET | Create an admin user
+  command: "./{{ superset_exec_name }} fab create-admin --username {{ superset_admin_user.username }} --password {{ superset_admin_user.password }} --email {{ superset_admin_user.email }} --firstname {{ superset_admin_user.firstname }} --lastname {{ superset_admin_user.lastname }}"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+  register: check_admin_user_exitence
+  when: "'role:[Admin]' not in check_admin_user_exitence.stdout or superset_force_reinstall"
+
+- name: SUPERSET | Create default roles and permissions
+  command: "./{{ superset_exec_name }} init"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+  register: check_admin_user_exitence
+  changed_when: false

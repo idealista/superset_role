@@ -1,0 +1,170 @@
+---
+
+## General
+# Version
+superset_package: apache-superset
+superset_app_name: superset
+superset_version: 0.37.2
+superset_python_version: 3.7
+superset_release_system: linux_amd64
+superset_exec_name: superset
+
+# Set true to force the download and installation of the binary
+superset_force_reinstall: false
+
+# Installation path
+superset_app_path: "/opt/{{ superset_app_name }}"
+superset_bin_path: "{{ superset_app_path }}/bin"
+superset_python_path: "{{ superset_app_path }}/lib/python{{ superset_python_version }}"
+superset_metadatadb_path: "/var/lib/{{ superset_app_name }}/db"
+superset_upload_folder_path: "/srv/{{ superset_app_name }}/upload"
+superset_upload_img_folder_path: "/srv/{{ superset_app_name }}/img"
+superset_conf_path: "/etc/{{ superset_app_name }}/conf"
+superset_config_file_path: "{{ superset_conf_path }}/superset_config.py"
+
+# General config
+superset_port: 8088
+superset_address: 0.0.0.0
+superset_sqlalchemy_database_uri: "sqlite:///{{ superset_metadatadb_path }}/superset.db"
+superset_flask_app_secret_key: "REPLACE ME"
+superset_health_url: "http://{{ superset_address }}:{{ superset_port }}/health"
+superset_check_wait_num_retries: 10
+superset_check_start_delay: 10
+
+# Libs & packages
+superset_required_libs:
+  - build-essential
+  - libssl-dev
+  - libffi-dev
+  - libsasl2-dev
+  - python3
+  - python3-dev
+  - python3-pip
+  - python3-setuptools
+
+superset_required_pip_packages:
+  - virtualenv
+
+# Override superset_db_drivers var as you need
+superset_db_drivers:
+  - name: Alternative Clickhouse
+    package: clickhouse-sqlalchemy
+
+  - name: MySQL
+    package: mysqlclient
+    required_libs:
+      - default-libmysqlclient-dev
+
+  - name: Oracle
+    package: cx_Oracle
+
+  - name: PostgreSQL
+    package: psycopg2-binary
+
+  # - name: Amazon Redshift
+  #   package: sqlalchemy-redshift
+
+  # - name: Apache Drill
+  #   package: sqlalchemy-drill
+
+  # - name: Apache Druid
+  #   package: pydruid
+
+  # - name: Apache Hive
+  #   package: pyhive
+
+  # - name: Apache Impala
+  #   package: impala
+
+  # - name: Apache Kylin
+  #   package: kylinpy
+
+  # - name: Apache Pinot
+  #   package: pinotdb
+
+  # - name: Apache Spark SQL
+  #   package: pyhive
+
+  # - name: Big Query
+  #   package: pybigquery
+
+  # - name: Clickhouse
+  #   package: sqlalchemy-clickhouse
+
+  # - name: CrockroachDB
+  #   package: cockroachdb
+
+  # - name: Dremio
+  #   package: sqlalchemy_dremio
+
+  # - name: Elasticsearch
+  #   package: sqlalchemy-exasol
+
+  # - name: Exasol
+  #   package: sqlalchemy-exasol
+
+  # - name: Google Sheets
+  #   package: gsheetsdb
+
+  # - name: IBM Db2
+  #   package: ibm_db_sa
+
+  # - name: Presto
+  #   package: pyhive
+
+  # - name: SAP Hana
+  #   package: sqlalchemy-hana
+
+  # - name: Snowflake
+  #   package: snowflake-sqlalchemy
+
+  # - name: SQL Server
+  #   package: pymssql
+
+  # - name: Teradata
+  #   package: sqlalchemy-teradata
+
+  # - name: Vertica
+  #   package: sqlalchemy- vertica-python
+
+## Service options
+superset_service_template_path: superset.service.j2
+# Documentation
+superset_documentation_link: https://superset.incubator.apache.org/docs/intro
+
+# Owner
+superset_user: superset
+superset_group: superset
+
+# Maximum number of files limit
+superset_max_files: 32768
+
+# Start on boot
+superset_service_enabled: True
+# Current state: started, stopped
+superset_service_state: started
+# Service name
+superset_service_name: superset
+
+# Logs
+superset_log_path: "/var/log/{{ superset_service_name }}"
+superset_log_stdout: "{% if superset_log_path is defined %}file:{{ superset_log_path }}.stdout.log {% else %} journal {% endif %}"
+superset_log_stderr: "{% if superset_log_path is defined %}file:{{ superset_log_path }}.stderr.log {% else %} journal {% endif %}"
+
+# Flags
+superset_run_options:
+  - "-p {{ superset_port }}"
+  - "-h '{{ superset_address }}'"
+  - "--with-threads"
+  - "--reload"
+  # - "--debugger"
+
+superset_private_tmp: true
+
+# Superset Admin user
+superset_admin_user:
+  firstname: "Admin"
+  lastname: "noname"
+  email: "email@domain.com"
+  username: "admin"
+  password: "admin"

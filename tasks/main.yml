@@ -1,0 +1,16 @@
+---
+
+- name: SUPERSET | Install
+  include: install.yml
+  tags:
+    - superset_install
+
+- name: SUPERSET | Configure
+  include: config.yml
+  tags:
+    - superset_configure
+
+- name: SUPERSET | Service
+  include: service.yml
+  tags:
+    - superset_service

@@ -1,0 +1,5 @@
+---
+- name: Converge
+  hosts: superset_group
+  roles:
+    - role: superset_role

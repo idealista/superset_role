@@ -1,0 +1,52 @@
+---
+
+service:
+  superset:
+    enabled: true
+    running: true
+process:
+  {{ superset_exec_name }}:
+    running: true
+user:
+  {{ superset_user }}:
+    exists: true
+    groups:
+      - {{ superset_group }}
+    shell: /usr/sbin/nologin
+group:
+  {{ superset_group }}:
+    exists: true
+port:
+  tcp:{{ superset_port }}:
+    listening: true
+    ip:
+      - {{ superset_address }}
+http:
+  {{ superset_health_url }}:
+    status: 200
+file:
+  {{ superset_bin_path }}:
+    exists: true
+    filetype: directory
+    owner: {{ superset_user }}
+    group: {{ superset_group }}
+  {{ superset_metadatadb_path }}:
+    exists: true
+    filetype: directory
+    owner: {{ superset_user }}
+    group: {{ superset_group }}
+  {{ superset_conf_path }}:
+    exists: true
+    filetype: directory
+    owner: {{ superset_user }}
+    group: {{ superset_group }}
+  {{ superset_config_file_path }}:
+    exists: true
+    filetype: file
+    owner: {{ superset_user }}
+    group: {{ superset_group }}
+    contains:
+      - "/APP_NAME\\s*=\\s.+/"
+      - "/SUPERSET_WEBSERVER_PORT\\s*=\\s\\d+/"
+      - "/SECRET_KEY\\s*=\\s'.+'/"
+      - "/SQLALCHEMY_DATABASE_URI\\s*=\\s'.+'/"

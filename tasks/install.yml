@@ -1,0 +1,97 @@
+---
+
+- name: SUPERSET | Ensure superset group
+  group:
+    name: "{{ superset_group }}"
+    system: yes
+    state: present
+
+- name: SUPERSET | Ensure superset user
+  user:
+    name: "{{ superset_user }}"
+    group: "{{ superset_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    createhome: no
+
+- name: SUPERSET | Installing dependencies
+  apt:
+    pkg: "{{ superset_required_libs }}"
+    state: present
+    update_cache: yes
+
+- name: SUPERSET | Installing required libs superset db drivers
+  apt:
+    pkg: "{{ item.required_libs | default(omit) }}"
+    state: present
+  with_items: "{{ superset_db_drivers }}"
+
+- name: SUPERSET | Installing required pip packages
+  pip:
+    name: "{{ superset_required_pip_packages }}"
+    executable: pip3
+
+- name: SUPERSET | Ensure app path exists and superset_user has ownership
+  file:
+    path: "{{ superset_app_path }}"
+    owner: "{{ superset_user }}"
+    group: "{{ superset_group }}"
+    state: "directory"
+    mode: 0775
+
+- name: SUPERSET | Ensure app subfolders exists and superset_user has ownership
+  file:
+    path: "{{ item }}"
+    owner: "{{ superset_user }}"
+    group: "{{ superset_group }}"
+    state: "directory"
+    mode: 0775
+    # recurse: yes
+  with_items:
+    - "{{ superset_conf_path }}"
+    - "{{ superset_metadatadb_path }}"
+    - "{{ superset_upload_folder_path }}"
+    - "{{ superset_upload_img_folder_path }}"
+
+- name: SUPERSET | Check virtualenv
+  stat:
+    path: "{{ superset_python_path }}"
+  register: venv_check
+
+- name: SUPERSET | Set a virtualenv
+  become: true
+  become_user: "{{ superset_user }}"
+  command: "virtualenv -p python{{ superset_python_version }} ."
+  args:
+    chdir: "{{ superset_app_path }}"
+  when: not venv_check.stat.exists or superset_force_reinstall
+
+- name: SUPERSET | Re-Installing superset on force reinstall
+  become: true
+  become_user: "{{ superset_user }}"
+  pip:
+    name: "{{ superset_package }}"
+    version: "{{ superset_version }}"
+    virtualenv: "{{ superset_virtualenv_path }}"
+    virtualenv_python: "python{{ superset_python_version }}"
+    state: "forcereinstall"
+  when: superset_force_reinstall
+
+- name: SUPERSET | Installing superset
+  become: true
+  become_user: "{{ superset_user }}"
+  pip:
+    name: "{{ superset_package }}"
+    version: "{{ superset_version }}"
+    virtualenv: "{{ superset_app_path }}"
+    virtualenv_python: "python{{ superset_python_version }}"
+
+- name: SUPERSET | Installing superset db drivers
+  become: true
+  become_user: "{{ superset_user }}"
+  pip:
+    name: "{{ item.package }}"
+    version: "{{ item.version | default(omit) }}"
+    virtualenv: "{{ superset_app_path }}"
+    virtualenv_python: "python{{ superset_python_version }}"
+  with_items: "{{ superset_db_drivers }}"

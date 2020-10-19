@@ -1,0 +1,7 @@
+---
+
+- name: restart superset
+  systemd:
+    name: superset
+    state: restarted
+  when: superset_service_state != 'stopped'
