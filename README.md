@@ -1,6 +1,6 @@
 # Superset Ansible role
 
-![Logo](https://raw.githubusercontent.com/idealista/superset_role/master/logo.gif)
+![Logo](https://raw.githubusercontent.com/idealista/superset_role/main/logo.gif)
 
 [![Build Status](https://travis-ci.org/idealista/superset_role.png)](https://travis-ci.org/idealista/superset_role)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-idealista.superset_role-B62682.svg)](https://galaxy.ansible.com/idealista/superset_role)
