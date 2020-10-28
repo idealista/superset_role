@@ -38,7 +38,7 @@ Create or add to your roles dependency file (e.g requirements.yml):
 
 ```yml
 - src: idealista.superset_role
-  version: 1.0.0
+  version: 1.0.1
   name: superset_role
 ```
 
