@@ -1,10 +1,5 @@
 ---
 
-- name: SUPERSET | Check if Daemon script is copied
-  stat:
-    path: "/etc/systemd/system/{{ superset_service_name }}.service"
-  register: daemon_script_present
-
 - name: SUPERSET | Copy Daemon script
   template:
     src: "{{ superset_service_template_path }}"
@@ -12,7 +7,6 @@
     mode: 0644
     owner: root
     group: root
-  when: not daemon_script_present.stat.exists or superset_force_reinstall
 
 - name: SUPERSET | Configuring service
   systemd:
@@ -20,13 +14,6 @@
     state: "{{ superset_service_state }}"
     enabled: "{{ superset_service_enabled }}"
     daemon_reload: yes
-  when: not daemon_script_present.stat.exists or superset_force_reinstall
-
-- name: SUPERSET | Ensure service is enabled and running
-  service:
-    name: "{{ superset_service_name }}"
-    enabled: "{{ superset_service_enabled }}"
-    state: "{{ superset_service_state }}"
 
 - name: SUPERSET | Wait for service health OK
   uri:
