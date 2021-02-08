@@ -30,7 +30,7 @@ Ansible 2.9.x.x version installed.
 
 Molecule 3.x.x version installed.
 
-For testing purposes, [Molecule](https://molecule.readthedocs.io/) with [Docker](https://www.docker.com/) as driver and  [Goss] (<https://github.com/aelsabbahy/goss>) as verifier.
+For testing purposes, [Molecule](https://molecule.readthedocs.io/) with [Docker](https://www.docker.com/) as driver and [Goss] (<https://github.com/aelsabbahy/goss>) as verifier.
 
 ### Installing
 
@@ -38,7 +38,7 @@ Create or add to your roles dependency file (e.g requirements.yml):
 
 ```yml
 - src: idealista.superset_role
-  version: 1.0.1
+  version: develop
   name: superset_role
 ```
 
@@ -61,7 +61,7 @@ Use in a playbook:
 
 Look to the [defaults](defaults/main.yml) properties file to see the possible configuration properties, it is very likely that you will not need to override any variables.
 
-Don't forget to override `superset_admin_user` with more secure values and the `superset_flask_app_secret_key` (superset_config.py `SECRET_KEY`) to follow the [superset configuration](https://superset.apache.org/docs/installation/configuring-superset)
+Don't forget to override `superset_admin_user` with more secure values and the `superset_flask_app_secret_key` (superset_config.py `SECRET_KEY`) to follow the [superset configuration](https://superset.apache.org/docs/installation/configuring-superset) and other values to use the new characteristics of the new 2.0 superset version like the email reports.
 
 In addition, superset requires additional drivers to connect to different databases [Supported Databases and Dependecies](https://superset.apache.org/docs/databases/installing-database-drivers). We left activated the most common drivers for us (MySQL, Oracle, PostgreSQL and Clickhouse). Choose yours editing the `superset_db_drivers` variable
 

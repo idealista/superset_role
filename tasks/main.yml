@@ -5,6 +5,11 @@
   tags:
     - superset_install
 
+- name: SUPERSET | Install Chrome and chromeDriver
+  include: install-chrome.yml
+  tags:
+    - superset_chrome
+
 - name: SUPERSET | Configure
   include: config.yml
   tags:

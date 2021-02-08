@@ -29,3 +29,91 @@ WTF_CSRF_ENABLED = True
 WTF_CSRF_EXEMPT_LIST = []
 # A CSRF token that expires in 1 year
 WTF_CSRF_TIME_LIMIT = 60 * 60 * 24 * 365
+
+# SIP-15 should be enabled for all new Superset deployments which ensures that the time
+# range endpoints adhere to [start, end). For existing deployments admins should provide
+# a dedicated period of time to allow chart producers to update their charts before
+# mass migrating all charts to use the [start, end) interval.
+#
+# Note if no end date for the grace period is specified then the grace period is
+# indefinite.
+SIP_15_ENABLED = {{ superset_sip_15_enabled }}
+SIP_15_GRACE_PERIOD_END: {{ superset_sip_15_grace_period_end }}
+SIP_15_DEFAULT_TIME_RANGE_ENDPOINTS = {{ superset_sip_15_default_time_range_endpoints }}
+SIP_15_TOAST_MESSAGE = '{{ superset_sip_15_toast_message }}'
+
+# Enable / disable scheduled email reports
+ENABLE_SCHEDULED_EMAIL_REPORTS = {{ superset_email_reports }}
+
+# Enable / disable Alerts, where users can define custom SQL that
+# will send emails with screenshots of charts or dashboards periodically
+# if it meets the criteria
+ENABLE_ALERTS = {{ superset_enable_alerts }}
+
+# Used for Alerts/Reports (Feature flask ALERT_REPORTS) to set the size for the
+# sliding cron window size, should be synced with the celery beat config minus 1 second
+ALERT_REPORTS_CRON_WINDOW_SIZE = {{ superset_alert_reports_cron_window_size }}
+
+# Email reports - minimum time resolution (in minutes) for the crontab
+EMAIL_REPORTS_CRON_RESOLUTION = {{ superset_email_reports_cron_resolution }}
+
+# Email report configuration
+# From address in emails
+EMAIL_REPORT_FROM_ADDRESS = '{{ superset_email_reports_from }}'
+
+# Send bcc of all reports to this address. Set to None to disable.
+# This is useful for maintaining an audit trail of all email deliveries.
+EMAIL_REPORT_BCC_ADDRESS = {{ superset_email_report_bcc_address }}
+
+# User credentials to use for generating reports
+# This user should have permissions to browse all the dashboards and
+# slices.
+# TODO: In the future, login as the owner of the item to generate reports
+EMAIL_REPORTS_USER = '{{ superset_email_reports_user }}'
+EMAIL_REPORTS_SUBJECT_PREFIX = '{{ superset_email_reports_subject_prefix }}'
+EMAIL_REPORTS_WEBDRIVER = '{{ superset_email_reports_webdriver }}'
+
+# smtp server configuration
+EMAIL_NOTIFICATIONS = {{ superset_email_notifications }}
+SMTP_HOST = '{{ superset_email_smtp_host }}'
+SMTP_STARTTLS = {{ superset_email_smtp_starttls }}
+SMTP_SSL = {{ superset_email_smtp_ssl }}
+SMTP_PORT = {{ superset_email_smtp_port }}
+SMTP_USER = '{{ superset_email_smtp_user }}'
+SMTP_PASSWORD = '{{ superset_email_smtp_password }}'
+SMTP_MAIL_FROM = '{{ superset_email_smtp_mail_from }}'
+
+# The webdriver to use for generating reports. Use one of the following
+# firefox
+#   Requires: geckodriver and firefox installations
+#   Limitations: can be buggy at times
+# chrome:
+#   Requires: headless chrome
+#   Limitations: unable to generate screenshots of elements
+WEBDRIVER_TYPE = '{{ superset_webdriver_type }}'
+
+# Window size - this will impact the rendering of the data
+WEBDRIVER_WINDOW = {'dashboard': (1600, 2000), 'slice': (3000, 1200)}
+
+# An optional override to the default auth hook used to provide auth to the
+# offline webdriver
+WEBDRIVER_AUTH_FUNC = None
+
+# Additional args to be passed as arguments to the config object
+# Note: these options are Chrome-specific. For FF, these should
+# only include the '--headless' arg
+WEBDRIVER_OPTION_ARGS = [
+    '--force-device-scale-factor=2.0',
+    '--high-dpi-support=2.0',
+    '--headless',
+]
+
+# Whether to bump the logging level to ERROR on the flask_appbuilder package
+# Set to False if/when debugging FAB related issues like
+# permission management
+SILENCE_FAB = True
+
+FAB_ADD_SECURITY_VIEWS = True
+FAB_ADD_SECURITY_PERMISSION_VIEW = True
+FAB_ADD_SECURITY_VIEW_MENU_VIEW = True
+FAB_ADD_SECURITY_PERMISSION_VIEWS_VIEW = True

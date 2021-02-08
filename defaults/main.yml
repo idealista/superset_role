@@ -4,7 +4,7 @@
 # Version
 superset_package: apache-superset
 superset_app_name: superset
-superset_version: 0.37.2
+superset_version: 1.0.0
 superset_python_version: 3.7
 superset_release_system: linux_amd64
 superset_exec_name: superset
@@ -12,8 +12,13 @@ superset_exec_name: superset
 # Set true to force the download and installation of the binary
 superset_force_reinstall: false
 
+# Owner
+superset_user: superset
+superset_group: superset
+
 # Installation path
 superset_app_path: "/opt/{{ superset_app_name }}"
+superset_user_home: "/home/{{ superset_user }}"
 superset_bin_path: "{{ superset_app_path }}/bin"
 superset_python_path: "{{ superset_app_path }}/lib/python{{ superset_python_version }}"
 superset_metadatadb_path: "/var/lib/{{ superset_app_name }}/db"
@@ -34,21 +39,38 @@ superset_check_start_delay: 10
 # Libs & packages
 superset_required_libs:
   - build-essential
+  - unzip
+  - gcc
+  - g++
   - libssl-dev
   - libffi-dev
   - libsasl2-dev
+  - libldap2-dev
+  - libcurl4-openssl-dev
+  - libssl-dev
   - python3
+  - python-dev
   - python3-dev
   - python3-pip
   - python3-setuptools
+  - python-mysqldb
 
 superset_required_pip_packages:
   - virtualenv
+
+superset_additional_pip_packages:
+  - package: plotly
+  - package: pystan
+    # version: 2.18
+  # - package: prophet
 
 # Override superset_db_drivers var as you need
 superset_db_drivers:
   - name: Alternative Clickhouse
     package: clickhouse-sqlalchemy
+
+  - name: Clickhouse
+    package: sqlalchemy-clickhouse
 
   - name: MySQL
     package: mysqlclient
@@ -60,6 +82,9 @@ superset_db_drivers:
 
   - name: PostgreSQL
     package: psycopg2-binary
+
+  - name: Presto
+    package: pyhive
 
   # - name: Amazon Redshift
   #   package: sqlalchemy-redshift
@@ -88,9 +113,6 @@ superset_db_drivers:
   # - name: Big Query
   #   package: pybigquery
 
-  # - name: Clickhouse
-  #   package: sqlalchemy-clickhouse
-
   # - name: CrockroachDB
   #   package: cockroachdb
 
@@ -108,9 +130,6 @@ superset_db_drivers:
 
   # - name: IBM Db2
   #   package: ibm_db_sa
-
-  # - name: Presto
-  #   package: pyhive
 
   # - name: SAP Hana
   #   package: sqlalchemy-hana
@@ -131,10 +150,6 @@ superset_db_drivers:
 superset_service_template_path: superset.service.j2
 # Documentation
 superset_documentation_link: https://superset.incubator.apache.org/docs/intro
-
-# Owner
-superset_user: superset
-superset_group: superset
 
 # Maximum number of files limit
 superset_max_files: 32768
@@ -168,3 +183,39 @@ superset_admin_user:
   email: "email@domain.com"
   username: "admin"
   password: "admin"
+
+# SIP_15
+superset_sip_15_enabled: True
+superset_sip_15_grace_period_end: None # or "date(YYYY, MM, DD)"
+superset_sip_15_default_time_range_endpoints: ["unknown", "inclusive"]
+superset_sip_15_toast_message: '("Action Required: Preview then save your chart using the new time range endpoints <a target="_blank" href="{url}" class="alert-link">here</a>.)'
+
+# Chrome and chromeDriver
+superset_webdriver_type: chrome
+superset_chrome_apt_key: https://dl-ssl.google.com/linux/linux_signing_key.pub
+superset_chrome_apt_repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+superset_chrome_lib: google-chrome-stable # google-chrome-stable allways install the latest because google remove from the repo the oldies
+superset_chromedriver_dir: "/usr/local/bin"
+superset_chromedriver_url: "https://chromedriver.storage.googleapis.com"
+superset_chromedriver_file: chromedriver_linux64.zip
+
+# Email settings
+superset_email_reports: True
+superset_email_reports_user: "{{ superset_admin_user.username }}"
+superset_email_reports_from: email@domain.com
+superset_email_reports_subject_prefix: "[Superset-Report] "
+superset_email_report_bcc_address: None
+superset_email_reports_webdriver: "{{ superset_chromedriver_dir }}/chromedriver"
+superset_email_reports_cron_resolution: 1
+
+superset_enable_alerts: True
+superset_alert_reports_cron_window_size: 59
+
+superset_email_notifications: True
+superset_email_smtp_host: host
+superset_email_smtp_starttls: False
+superset_email_smtp_ssl: False
+superset_email_smtp_port: 25
+superset_email_smtp_user: "user"
+superset_email_smtp_password: "password"
+superset_email_smtp_mail_from: emial_from@domain.com

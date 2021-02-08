@@ -1,0 +1,49 @@
+---
+# Install google-chrome-stable which has headless chrome mode in latest release (version > 59)
+
+- name: Install Chrome | Ensure apt-transport-https is installed
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: Install Chrome | Add apt key
+  apt_key:
+    url: "{{ superset_chrome_apt_key }}"
+    state: present
+
+- name: Install Chrome | Add google repositories for chrome
+  apt_repository:
+    repo: "{{ superset_chrome_apt_repo }}"
+    state: present
+    filename: 'google-chrome'
+  register: chrome_repo
+
+- name: Install Chrome | Update apt cache if repo was added.
+  apt:
+    update_cache: true
+  when: chrome_repo.changed
+
+- name: Install Chrome | Install
+  apt:
+    name: "{{ superset_chrome_lib }}"
+    state: present
+
+# Install chrome driver
+- name: Install chromeDriver | Get Latest release
+  uri:
+    url: https://chromedriver.storage.googleapis.com/LATEST_RELEASE
+    return_content: true
+  register: chromedriver_latest
+  changed_when: false
+
+- name: Install Chrome | Stat chromedriver
+  stat:
+    path: usr/local/bin/chromedriver
+  register: chromedriver_stat
+
+- name: Install chromeDriver | Download and extract
+  unarchive:
+    remote_src: true
+    src: "{{ superset_chromedriver_url }}/{{ chromedriver_latest.content }}/{{ superset_chromedriver_file }}"
+    dest: "{{ superset_chromedriver_dir }}"
+  when: chromedriver_stat.stat.exists == False

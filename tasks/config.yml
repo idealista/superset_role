@@ -35,7 +35,6 @@
     chdir: "{{ superset_bin_path }}"
   environment:
     SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
-  register: check_admin_user_exitence
   when: "'role:[Admin]' not in check_admin_user_exitence.stdout or superset_force_reinstall"
 
 - name: SUPERSET | Create default roles and permissions
@@ -44,5 +43,11 @@
     chdir: "{{ superset_bin_path }}"
   environment:
     SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
-  register: check_admin_user_exitence
-  changed_when: false
+  when: "'role:[Admin]' not in check_admin_user_exitence.stdout or superset_force_reinstall"
+
+- name: SUPERSET | Ensure db file superset_user has ownership
+  file:
+    path: "{{ superset_metadatadb_path }}/superset.db"
+    owner: "{{ superset_user }}"
+    group: "{{ superset_group }}"
+    state: "file"
