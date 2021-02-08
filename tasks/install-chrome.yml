@@ -18,15 +18,11 @@
     filename: 'google-chrome'
   register: chrome_repo
 
-- name: Install Chrome | Update apt cache if repo was added.
-  apt:
-    update_cache: true
-  when: chrome_repo.changed
-
 - name: Install Chrome | Install
   apt:
     name: "{{ superset_chrome_lib }}"
     state: present
+    update_cache: true
 
 # Install chrome driver
 - name: Install chromeDriver | Get Latest release
@@ -46,4 +42,4 @@
     remote_src: true
     src: "{{ superset_chromedriver_url }}/{{ chromedriver_latest.content }}/{{ superset_chromedriver_file }}"
     dest: "{{ superset_chromedriver_dir }}"
-  when: chromedriver_stat.stat.exists == False
+  when: not chromedriver_stat.stat.exists
