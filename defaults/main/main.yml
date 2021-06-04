@@ -1,0 +1,225 @@
+---
+
+# General
+# Version
+superset_package: apache-superset
+superset_version: 1.1.0
+superset_python_version:
+superset_release_system: linux_amd64
+superset_exec_name: superset
+
+# Set true to force the download and installation of the binary
+superset_force_reinstall: false
+
+# Owner
+superset_user: superset
+superset_group: superset
+
+# Files and paths
+superset_app_home: "/opt/{{ superset_app_name }}"
+superset_user_home: "/var/lib/{{ superset_user }}"
+superset_bin_path: "{{ superset_app_home }}/bin"
+superset_python_path: "{{ superset_app_home }}/lib/python{{ superset_python_version }}"
+superset_metadatadb_path: "/var/lib/{{ superset_app_name }}/db"
+superset_conf_path: "/etc/{{ superset_app_name }}"
+superset_config_file_path: "{{ superset_conf_path }}/superset_config.py"
+superset_environment_file_folder: /etc/sysconfig
+
+# Logs
+superset_log_path: "/var/log/{{ superset_app_name }}"
+superset_log_stdout: "{% if superset_log_path is defined %}file:{{ superset_log_path }}.stdout.log {% else %} journal {% endif %}"
+superset_log_stderr: "{% if superset_log_path is defined %}file:{{ superset_log_path }}.stderr.log {% else %} journal {% endif %}"
+
+# Installation skeleton
+superset_skeleton_paths:
+  - "{{ superset_app_home }}"
+  - "{{ superset_user_home }}"
+  - "{{ superset_conf_path }}"
+  - "{{ superset_log_path }}"
+  - "{{ superset_upload_folder }}"
+  - "{{ superset_img_upload_folder }}"
+  - "{{ superset_metadatadb_path }}"
+  - "{{ superset_environment_file_folder }}"
+
+# Libs & packages
+superset_required_libs:
+  - build-essential
+  - unzip
+  - gcc
+  - g++
+  - libssl-dev
+  - libffi-dev
+  - libsasl2-dev
+  - libldap2-dev
+  - libcurl4-openssl-dev
+  - libssl-dev
+  - python3
+  - python-dev
+  - python3-dev
+  - python3-pip
+  - python3-setuptools
+
+superset_global_required_pip_packages:
+  - name: virtualenv
+    # version: 20.4.6
+
+# superset_required_python_packages:
+#   - name: SQLAlchemy
+#     version: 1.3.23 # Version is not mandatory
+
+#   - name: pyasn1
+#     version: 0.4.4
+
+# superset_additional_python_packages:
+#   - name: plotly
+#   - name: pystan
+#     version: 2.19.1.1
+#   - name: prophet
+
+# Override superset_db_drivers var as you need
+superset_db_drivers:
+  - name: Alternative Clickhouse
+    package: clickhouse-sqlalchemy
+
+  - name: Clickhouse
+    package: sqlalchemy-clickhouse
+
+  - name: MySQL
+    package: mysqlclient
+    required_libs:
+      - default-libmysqlclient-dev
+      - python-mysqldb
+
+  - name: Oracle
+    package: cx_Oracle
+
+  - name: PostgreSQL
+    package: psycopg2-binary
+
+  - name: Presto
+    package: pyhive
+
+  # - name: Amazon Redshift
+  #   package: sqlalchemy-redshift
+
+  # - name: Apache Drill
+  #   package: sqlalchemy-drill
+
+  # - name: Apache Druid
+  #   package: pydruid
+
+  # - name: Apache Hive
+  #   package: pyhive
+
+  # - name: Apache Impala
+  #   package: impala
+
+  # - name: Apache Kylin
+  #   package: kylinpy
+
+  # - name: Apache Pinot
+  #   package: pinotdb
+
+  # - name: Apache Spark SQL
+  #   package: pyhive
+
+  # - name: Big Query
+  #   package: pybigquery
+
+  # - name: CrockroachDB
+  #   package: cockroachdb
+
+  # - name: Dremio
+  #   package: sqlalchemy_dremio
+
+  # - name: Elasticsearch
+  #   package: sqlalchemy-exasol
+
+  # - name: Exasol
+  #   package: sqlalchemy-exasol
+
+  # - name: Google Sheets
+  #   package: gsheetsdb
+
+  # - name: IBM Db2
+  #   package: ibm_db_sa
+
+  # - name: SAP Hana
+  #   package: sqlalchemy-hana
+
+  # - name: Snowflake
+  #   package: snowflake-sqlalchemy
+
+  # - name: SQL Server
+  #   package: pymssql
+
+  # - name: Teradata
+  #   package: sqlalchemy-teradata
+
+  # - name: Vertica
+  #   package: sqlalchemy- vertica-python
+
+# Documentation
+superset_documentation_link: https://superset.incubator.apache.org/docs/intro
+
+# Maximum number of files limit
+superset_max_files: 32768
+
+# Flags
+superset_run_options:
+  - "-p {{ superset_webserver_port }}"
+  - "-h '{{ superset_webserver_address }}'"
+  - "--with-threads"
+  - "--reload"
+  # - "--debugger"
+
+# Service
+superset_private_tmp: false
+
+superset_services:
+  superset:
+    service_name: superset
+    enabled: true
+    running: true
+    state: started
+    path: superset.service.j2
+    health_url: "http://{{ superset_webserver_address }}:{{ superset_webserver_port }}/health"
+    check_num_retries: 10
+    check_start_delay: 10
+
+# Users
+# Superset Admin users
+superset_admin_users:
+  - name:
+    username:
+    password:
+    role:
+    email:
+    firstname:
+    lastname:
+
+# Superset regular users
+# superset_regular_users:
+#   - name:
+#     username:
+#     password:
+#     role:
+#     email:
+#     firstname:
+#     lastname:
+
+superset_webdriver_type: firefox
+
+# Chrome and chromeDriver
+superset_chrome_apt_key: https://dl-ssl.google.com/linux/linux_signing_key.pub
+superset_chrome_apt_repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+superset_chrome_lib: google-chrome-stable  # google-chrome-stable allways install the latest because google remove from the repo the oldies
+superset_chromedriver_dir: /usr/local/bin
+superset_chromedriver_url: "https://chromedriver.storage.googleapis.com"
+superset_chromedriver_file: chromedriver_linux64.zip
+
+# Firefox-ESR and geckodriver
+superset_firefox_lib: firefox-esr
+superset_geckodriver_version: 0.29.1
+superset_geckodriver_dir: /usr/bin
+superset_geckodriver_url: "https://github.com/mozilla/geckodriver/releases/download/v{{ superset_geckodriver_version }}/geckodriver-v{{ superset_geckodriver_version }}-linux64.tar.gz"

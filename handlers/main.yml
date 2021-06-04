@@ -4,4 +4,26 @@
   systemd:
     name: superset
     state: restarted
-  when: superset_service_state != 'stopped'
+  when:
+    - superset_services['superset']
+    - superset_services['superset']['enabled']
+
+- name: superset initialize db
+  command: "./{{ superset_exec_name }} db upgrade"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  notify:
+    - restart superset
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+
+- name: superset sync db
+  command: "./{{ superset_exec_name }} init"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  notify:
+    - restart superset
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"

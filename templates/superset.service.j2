@@ -1,29 +1,27 @@
 {{ ansible_managed | comment }}
+
 [Unit]
-Description=superset
+Description=Superset daemom
 Documentation={{ superset_documentation_link }}
 Requires=network-online.target
 After=network-online.target
 
 [Service]
-PrivateTmp={{ superset_private_tmp }}
+RuntimeDirectory={{ superset_app_name }}
+EnvironmentFile={{ superset_environment_file_folder }}/{{ superset_app_name }}
 User={{ superset_user }}
 Group={{ superset_group }}
-RuntimeDirectory={{ superset_user }}
-WorkingDirectory={{ superset_app_path }}
-LimitNOFILE={{ superset_max_files }}
-
-Environment="SUPERSET_HOME={{ superset_app_path }}"
-Environment="SUPERSET_CONFIG_PATH={{ superset_config_file_path }}"
-Environment="PYTHONPATH={{ superset_config_file_path }}:${PYTHONPATH}"
-Environment="PATH={{ superset_bin_path }}:${PATH}"
+Type=simple
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5s
+PrivateTmp={{ superset_private_tmp }}
 ExecStart={{ superset_bin_path }}/{{ superset_exec_name }} run {% for option in superset_run_options %}{% if option %}{{ option }} {% endif %}{% endfor %}
 
-StandardOutput={{ superset_log_stdout }}
-StandardError={{ superset_log_stderr }}
-ExecReload=/bin/kill -HUP $MAINPID
-KillSignal=SIGTERM
-Restart=always
+LimitNOFILE={{ superset_max_files }}
+
+# StandardOutput={{ superset_log_stdout }}
+# StandardError={{ superset_log_stderr }}
 
 [Install]
 WantedBy=multi-user.target

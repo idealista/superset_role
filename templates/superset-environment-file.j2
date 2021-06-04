@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+# This file is the environment file for Superset. Put this file in /etc/sysconfig/superset per default
+# configuration of the systemd unit files.
+#
+# SUPERSET_HOME=
+# SUPERSET_CONFIG_PATH=
+#
+
+SUPERSET_HOME={{ superset_app_home }}
+SUPERSET_CONFIG_PATH={{ superset_config_file_path }}
+PYTHONPATH={{ superset_config_file_path }}:${PYTHONPATH}
+PATH={{ superset_bin_path }}:${PATH}
+
+HOSTALIASES=/etc/host.aliases

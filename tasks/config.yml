@@ -1,53 +1,69 @@
 ---
 
-- name: SUPERSET | Check if superset_config script is copied
-  stat:
-    path: "{{ superset_config_file_path }}"
-
-- name: SUPERSET | Copy superset_config script
+- name: SUPERSET | Copy superset_config file
   template:
     src: superset_config.j2
     dest: "{{ superset_config_file_path }}"
     mode: 0775
     owner: "{{ superset_user }}"
     group: "{{ superset_group }}"
+  register: superset_config
+  notify:
+    - restart superset
+  tags: config
 
-- name: SUPERSET | Initialize the db
+- name: Initialize the db
   command: "./{{ superset_exec_name }} db upgrade"
   args:
     chdir: "{{ superset_bin_path }}"
-  environment:
-    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
-  changed_when: false
+  register: superset_db_init
+  when: superset_install.changed or superset_config.changed  # noqa 503
+  notify:
+    - restart superset
 
-- name: Check if an admin user already exists
+- name: List users
   command: "./{{ superset_exec_name }} fab list-users"
   args:
     chdir: "{{ superset_bin_path }}"
-  environment:
-    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
-  register: check_admin_user_exitence
+  register: superset_listed_users
   changed_when: false
-
-- name: SUPERSET | Create an admin user
-  command: "./{{ superset_exec_name }} fab create-admin --username {{ superset_admin_user.username }} --password {{ superset_admin_user.password }} --email {{ superset_admin_user.email }} --firstname {{ superset_admin_user.firstname }} --lastname {{ superset_admin_user.lastname }}"
-  args:
-    chdir: "{{ superset_bin_path }}"
-  environment:
-    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
-  when: "'role:[Admin]' not in check_admin_user_exitence.stdout or superset_force_reinstall"
+  no_log: true
+  tags: config
 
 - name: SUPERSET | Create default roles and permissions
   command: "./{{ superset_exec_name }} init"
   args:
     chdir: "{{ superset_bin_path }}"
-  environment:
-    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
-  when: "'role:[Admin]' not in check_admin_user_exitence.stdout or superset_force_reinstall"
+  when: superset_install.changed or superset_config.changed
+  tags: config
+
+- name: SUPERSET | Create admin users
+  command: "./{{ superset_exec_name }} fab create-admin --username {{ item.username }} --password {{ item.password }} --email {{ item.email }} --firstname {{ item.firstname }} --lastname {{ item.lastname }}"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  with_items: "{{ superset_admin_users }}"
+  when: "'username:' ~ item.username not in superset_listed_users.stdout or superset_force_reinstall"
+  notify:
+    - superset sync db
+  # no_log: true
+  tags: config
+
+- name: SUPERSET | Create regular users
+  command: "./{{ superset_exec_name }} fab create-user --username {{ item.username }} --password {{ item.password }} --role {{ item.role | default('Public') }} --email {{ item.email }} --firstname {{ item.firstname }} --lastname {{ item.lastname }}"
+  args:
+    chdir: "{{ superset_bin_path }}"
+  with_items: "{{ superset_regular_users }}"
+  when: "superset_regular_users is defined and 'username:' ~ item.username not in superset_listed_users.stdout or superset_force_reinstall"
+  notify:
+    - superset sync db
+  # no_log: true
+  tags: config
 
 - name: SUPERSET | Ensure db file superset_user has ownership
   file:
     path: "{{ superset_metadatadb_path }}/superset.db"
     owner: "{{ superset_user }}"
     group: "{{ superset_group }}"
-    state: "file"
+    state: file
+  when: superset_sqlalchemy_database_uri is search("sqlite")
+  tags: config

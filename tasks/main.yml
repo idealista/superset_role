@@ -5,10 +5,17 @@
   tags:
     - superset_install
 
+- name: SUPERSET | Install Firefox and geckodriver
+  include: install-firefox.yml
+  tags:
+    - superset_firefox
+  when: superset_webdriver_type == "firefox"
+
 - name: SUPERSET | Install Chrome and chromeDriver
   include: install-chrome.yml
   tags:
     - superset_chrome
+  when: superset_webdriver_type == "chrome"
 
 - name: SUPERSET | Configure
   include: config.yml
