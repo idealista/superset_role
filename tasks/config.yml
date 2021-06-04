@@ -34,7 +34,7 @@
   command: "./{{ superset_exec_name }} init"
   args:
     chdir: "{{ superset_bin_path }}"
-  when: superset_install.changed or superset_config.changed
+  when: superset_install.changed or superset_config.changed  # noqa 503
   tags: config
 
 - name: SUPERSET | Create admin users
