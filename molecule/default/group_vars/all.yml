@@ -12,7 +12,7 @@ superset_admin_users:
     password: "tokio-3"
     role: "Admin"
     firstname: "NERV"
-    lastname: "noname"
+    lastname: "Japan"
     email: "admin@nerv.com"
 
 superset_regular_users:

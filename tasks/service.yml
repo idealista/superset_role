@@ -30,7 +30,7 @@
 
 - name: SUPERSET | Wait for service health OK
   uri:
-    url: "{{ item.value.health_url }}"
+    url: "{{ item.value.health_url | default(omit) }}"
     status_code: 200
   retries: "{{ item.value.check_num_retries }}"
   delay: "{{ item.value.check_start_delay }}"
@@ -38,5 +38,9 @@
   until: result.status in [200]
   changed_when: false
   with_dict: "{{ superset_services }}"
-  when: item.value.state == 'started'
+  when:
+    - item.value.state == 'started'
+    - item.value.enabled
+    - item.value.running
+    - item.value.health_url
   tags: service

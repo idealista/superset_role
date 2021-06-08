@@ -65,7 +65,10 @@
   when: superset_required_python_packages is defined
   notify:
     - superset initialize db
-    - restart superset
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"
 
 - name: SUPERSET | Re-Installing superset on force reinstall
   become: true
@@ -95,7 +98,11 @@
     pkg: "{{ item.required_libs | default(omit) }}"
     state: present
   with_items: "{{ superset_db_drivers }}"
-  notify: restart superset
+  notify:
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"
 
 - name: SUPERSET | Installing superset db drivers
   become: true
@@ -108,7 +115,10 @@
   with_items: "{{ superset_db_drivers }}"
   notify:
     - superset initialize db
-    - restart superset
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"
 
 - name: SUPERSET | Installing additional superset packages
   become: true
@@ -123,4 +133,7 @@
   when: superset_additional_python_packages is defined
   notify:
     - superset initialize db
-    - restart superset
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"

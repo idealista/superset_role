@@ -1,19 +1,46 @@
 ---
 
-- name: restart superset
+- name: restart {{ superset_services.app.service_name }}
   systemd:
-    name: superset
+    name: "{{ superset_services.app.service_name }}"
     state: restarted
   when:
-    - superset_services['superset']
-    - superset_services['superset']['enabled']
+    - superset_services.app
+    - superset_services.app.enabled
+
+- name: restart {{ superset_services.flower.service_name }}
+  systemd:
+    name: "{{ superset_services.flower.service_name }}"
+    state: restarted
+  when:
+    - superset_services.flower
+    - superset_services.flower.enabled
+
+- name: restart {{ superset_services.celery-worker.service_name }}
+  systemd:
+    name: "{{ superset_services.celery-worker.service_name }}"
+    state: restarted
+  when:
+    - superset_services.celery_worker
+    - superset_services.celery_worker.enabled
+
+- name: restart {{ superset_services.celery-beat.service_name }}
+  systemd:
+    name: "{{ superset_services.celery-beat.service_name }}"
+    state: restarted
+  when:
+    - superset_services.celery_beat
+    - superset_services.celery_beat.enabled
 
 - name: superset initialize db
   command: "./{{ superset_exec_name }} db upgrade"
   args:
     chdir: "{{ superset_bin_path }}"
   notify:
-    - restart superset
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"
   environment:
     SUPERSET_HOME: "{{ superset_app_home }}"
     SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
@@ -23,7 +50,7 @@
   args:
     chdir: "{{ superset_bin_path }}"
   notify:
-    - restart superset
+    - "restart {{ superset_services.app.service_name }}"
   environment:
     SUPERSET_HOME: "{{ superset_app_home }}"
     SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"

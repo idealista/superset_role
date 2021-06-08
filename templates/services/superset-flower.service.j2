@@ -1,0 +1,25 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Superset Flower daemon
+Documentation={{ superset_services.flower.doc_url }}
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+RuntimeDirectory={{ superset_services.flower.service_name }}
+EnvironmentFile={{ superset_environment_file_folder }}/{{ superset_app_name }}
+User={{ superset_user }}
+Group={{ superset_group }}
+Type=simple
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5s
+PrivateTmp={{ superset_private_tmp }}
+ExecStart={{ superset_bin_path }}/{{ superset_exec_name }} flower {% for option in superset_services.flower.run_options %}{% if option %}{{ option }} {% endif %}{% endfor %}
+
+StandardOutput={{ superset_log_path }}/{{ superset_services.flower.service_name }}.stdout.log
+StandardError={{ superset_log_path }}/{{ superset_services.flower.service_name }}.stderr.log
+
+[Install]
+WantedBy=multi-user.target

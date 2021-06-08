@@ -132,16 +132,16 @@ superset_druid_metadata_links_enabled: True
 superset_auth_type: AUTH_DB
 
 # To setup Full admin role name
-superset_auth_role_admin:
+superset_auth_role_admin: Admin
 
 # To setup Public role name, no authentication needed
-superset_auth_role_public:
+superset_auth_role_public: Public
 
 # Will allow user self registration (True/False)
-superset_auth_user_registration:
+superset_auth_user_registration: True
 
 # The default user self registration role
-superset_auth_user_registration_role:
+superset_auth_user_registration_role: Public
 
 # [LDAP]
 # When using LDAP Auth, setup the LDAP server

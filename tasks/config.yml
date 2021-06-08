@@ -9,7 +9,10 @@
     group: "{{ superset_group }}"
   register: superset_config
   notify:
-    - restart superset
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"
   tags: config
 
 - name: Initialize the db
@@ -19,7 +22,10 @@
   register: superset_db_init
   when: superset_install.changed or superset_config.changed  # noqa 503
   notify:
-    - restart superset
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"
 
 - name: List users
   command: "./{{ superset_exec_name }} fab list-users"
@@ -45,7 +51,7 @@
   when: "'username:' ~ item.username not in superset_listed_users.stdout or superset_force_reinstall"
   notify:
     - superset sync db
-  # no_log: true
+  no_log: true
   tags: config
 
 - name: SUPERSET | Create regular users
@@ -56,7 +62,7 @@
   when: "superset_regular_users is defined and 'username:' ~ item.username not in superset_listed_users.stdout or superset_force_reinstall"
   notify:
     - superset sync db
-  # no_log: true
+  no_log: true
   tags: config
 
 - name: SUPERSET | Ensure db file superset_user has ownership

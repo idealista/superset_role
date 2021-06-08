@@ -24,6 +24,7 @@ superset_metadatadb_path: "/var/lib/{{ superset_app_name }}/db"
 superset_conf_path: "/etc/{{ superset_app_name }}"
 superset_config_file_path: "{{ superset_conf_path }}/superset_config.py"
 superset_environment_file_folder: /etc/sysconfig
+superset_pidfile_folder: "/run/{{ superset_app_name }}"
 
 # Logs
 superset_log_path: "/var/log/{{ superset_app_name }}"
@@ -40,6 +41,7 @@ superset_skeleton_paths:
   - "{{ superset_img_upload_folder }}"
   - "{{ superset_metadatadb_path }}"
   - "{{ superset_environment_file_folder }}"
+  - "{{ superset_pidfile_folder }}"
 
 # Libs & packages
 superset_required_libs:
@@ -165,27 +167,70 @@ superset_documentation_link: https://superset.incubator.apache.org/docs/intro
 # Maximum number of files limit
 superset_max_files: 32768
 
-# Flags
-superset_run_options:
-  - "-p {{ superset_webserver_port }}"
-  - "-h '{{ superset_webserver_address }}'"
-  - "--with-threads"
-  - "--reload"
-  # - "--debugger"
-
 # Service
 superset_private_tmp: false
 
 superset_services:
-  superset:
-    service_name: superset
+  app:
+    service_name: "{{ superset_app_name }}"
     enabled: true
     running: true
     state: started
-    path: superset.service.j2
-    health_url: "http://{{ superset_webserver_address }}:{{ superset_webserver_port }}/health"
+    path: services/superset.service.j2
     check_num_retries: 10
     check_start_delay: 10
+    health_url: "http://{{ superset_webserver_address }}:{{ superset_webserver_port }}/health"
+    doc_url: "{{ superset_documentation_link }}"
+    run_options:
+      - "-p {{ superset_webserver_port }}"
+      - "-h '{{ superset_webserver_address }}'"
+      - "--with-threads"
+      - "--reload"
+      # - "--debugger"
+  flower:
+    service_name: "{{ superset_app_name }}-flower"
+    enabled: false
+    running: false
+    state: started
+    path: services/superset-flower.service.j2
+    check_num_retries: 10
+    check_start_delay: 10
+    health_url: ""
+    doc_url: "https://apache-superset.readthedocs.io/en/latest/installation.html#celery-flower"
+    run_options: []
+  celery_worker:
+    service_name: celery-worker
+    enabled: false
+    running: false
+    state: started
+    path: services/celery-worker.service.j2
+    check_num_retries: 10
+    check_start_delay: 10
+    health_url: ""
+    doc_url: "https://docs.celeryproject.org/en/stable/reference/cli.html#celery-worker"
+    run_options:
+      - "--app={{ superset_app_name }}.tasks.celery_app:app"
+      - "--pool=prefork -O fair --pool=prefork"
+      - "--max-tasks-per-child=20"
+      - "--pidfile='{{ superset_pidfile_folder }}/celery-worker.pid'"
+      - "--logfile={{ superset_log_path }}/celery-worker.log"
+      # - "--detach"
+  celery_beat:
+    service_name: celery-beat
+    enabled: false
+    running: false
+    state: started
+    path: services/celery-beat.service.j2
+    check_num_retries: 10
+    check_start_delay: 10
+    health_url: ""
+    doc_url: "https://docs.celeryproject.org/en/stable/reference/cli.html#celery-beat"
+    run_options:
+      - "--app={{ superset_app_name }}.tasks.celery_app:app"
+      - "--pidfile='{{ superset_pidfile_folder }}/celery-beat.pid'"
+      - "--loglevel=INFO"
+      - "--logfile={{ superset_log_path }}/celery-beat.log"
+      # - "--detach"
 
 # Users
 # Superset Admin users
