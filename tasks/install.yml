@@ -80,6 +80,8 @@
     virtualenv_python: "python{{ superset_python_version }}"
     state: "forcereinstall"
   when: superset_force_reinstall
+  notify:
+    - "restart {{ superset_services.app.service_name }}"
 
 - name: SUPERSET | Installing superset
   become: true
@@ -91,6 +93,8 @@
     virtualenv: "{{ superset_app_home }}"
     virtualenv_python: "python{{ superset_python_version | default(omit) }}"
   register: superset_install
+  notify:
+    - "restart {{ superset_services.app.service_name }}"
   when: not superset_force_reinstall
 
 - name: SUPERSET | Installing required libs of superset db drivers

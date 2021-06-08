@@ -16,17 +16,17 @@
     - superset_services.flower
     - superset_services.flower.enabled
 
-- name: restart {{ superset_services.celery-worker.service_name }}
+- name: restart {{ superset_services.celery_worker.service_name }}
   systemd:
-    name: "{{ superset_services.celery-worker.service_name }}"
+    name: "{{ superset_services.celery_worker.service_name }}"
     state: restarted
   when:
     - superset_services.celery_worker
     - superset_services.celery_worker.enabled
 
-- name: restart {{ superset_services.celery-beat.service_name }}
+- name: restart {{ superset_services.celery_beat.service_name }}
   systemd:
-    name: "{{ superset_services.celery-beat.service_name }}"
+    name: "{{ superset_services.celery_beat.service_name }}"
     state: restarted
   when:
     - superset_services.celery_beat
