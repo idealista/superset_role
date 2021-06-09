@@ -21,7 +21,7 @@ port:
     ip:
       - {{ superset_webserver_address }}
 http:
-  {{ superset_services.superset.health_url }}:
+  {{ superset_services.app.health_url }}:
     status: 200
 file:
   {{ superset_bin_path }}:
