@@ -8,13 +8,13 @@
     - superset_services.app
     - superset_services.app.enabled
 
-- name: restart {{ superset_services.flower.service_name }}
+- name: restart {{ superset_services.celery_flower.service_name }}
   systemd:
-    name: "{{ superset_services.flower.service_name }}"
+    name: "{{ superset_services.celery_flower.service_name }}"
     state: restarted
   when:
-    - superset_services.flower
-    - superset_services.flower.enabled
+    - superset_services.celery_flower
+    - superset_services.celery_flower.enabled
 
 - name: restart {{ superset_services.celery_worker.service_name }}
   systemd:
@@ -38,7 +38,7 @@
     chdir: "{{ superset_bin_path }}"
   notify:
     - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"
   environment:

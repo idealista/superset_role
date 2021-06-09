@@ -10,7 +10,7 @@
   register: superset_config
   notify:
     - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"
   tags: config
@@ -23,7 +23,7 @@
   when: superset_install.changed or superset_config.changed  # noqa 503
   notify:
     - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"
 

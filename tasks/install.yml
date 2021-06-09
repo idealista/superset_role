@@ -66,7 +66,7 @@
   notify:
     - superset initialize db
     - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"
 
@@ -102,9 +102,10 @@
     pkg: "{{ item.required_libs | default(omit) }}"
     state: present
   with_items: "{{ superset_db_drivers }}"
+  when: superset_db_drivers is defined
   notify:
     - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"
 
@@ -112,17 +113,21 @@
   become: true
   become_user: "{{ superset_user }}"
   pip:
-    name: "{{ item.package }}"
-    version: "{{ item.version | default(omit) }}"
+    name: "{{ item.1.name }}"
+    version: "{{ item.1.version | default(omit) }}"
     virtualenv: "{{ superset_app_home }}"
     virtualenv_python: "python{{ superset_python_version }}"
-  with_items: "{{ superset_db_drivers }}"
+  with_subelements:
+    - "{{ superset_db_drivers }}"
+    - package
+  when: superset_db_drivers is defined
   notify:
     - superset initialize db
     - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"
+
 
 - name: SUPERSET | Installing additional superset packages
   become: true
@@ -138,6 +143,6 @@
   notify:
     - superset initialize db
     - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.flower.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"

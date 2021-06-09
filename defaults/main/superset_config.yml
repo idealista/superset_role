@@ -138,7 +138,7 @@ superset_auth_role_admin: Admin
 superset_auth_role_public: Public
 
 # Will allow user self registration (True/False)
-superset_auth_user_registration: True
+superset_auth_user_registration: False
 
 # The default user self registration role
 superset_auth_user_registration_role: Public
@@ -464,6 +464,7 @@ superset_sqllab_save_warning_message: None
 superset_sqllab_schedule_warning_message: None
 
 # [ Celery config ]
+superset_celery_flower_port: 5555
 superset_broker_url: sqla+sqlite:///celerydb.sqlite
 superset_celery_imports: ("superset.sql_lab", "superset.tasks")
 superset_celery_result_backend: db+sqlite:///celery_results.sqlite

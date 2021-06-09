@@ -47,12 +47,12 @@ CUSTOM_SECURITY_MANAGER = {{ superset_custom_security_manager }}
 SQLALCHEMY_TRACK_MODIFICATIONS = {{ superset_sqlalchemy_track_modifications }}
 
 # Your App secret key
-SECRET_KEY = '{{ superset_secret_key }}'
+SECRET_KEY = "\2\1{{ superset_secret_key }}\1\2\e\y\y\h"
 
 # The SQLAlchemy connection string.
 # SQLALCHEMY_DATABASE_URI = 'mysql://myapp@localhost/myapp'
 # SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/myapp'
-SQLALCHEMY_DATABASE_URI = '{{ superset_sqlalchemy_database_uri }}'
+SQLALCHEMY_DATABASE_URI = "{{ superset_sqlalchemy_database_uri }}"
 
 # In order to hook up a custom password store for all SQLACHEMY connections
 # implement a function that takes a single argument of type 'sqla.engine.url',

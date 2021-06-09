@@ -65,7 +65,8 @@ superset_global_required_pip_packages:
   - name: virtualenv
     # version: 20.4.6
 
-# superset_required_python_packages:
+superset_required_python_packages:
+  - name: flower
 #   - name: SQLAlchemy
 #     version: 1.3.23 # Version is not mandatory
 
@@ -79,87 +80,136 @@ superset_global_required_pip_packages:
 #   - name: prophet
 
 # Override superset_db_drivers var as you need
-superset_db_drivers:
-  - name: Alternative Clickhouse
-    package: clickhouse-sqlalchemy
+# superset_db_drivers:
 
-  - name: Clickhouse
-    package: sqlalchemy-clickhouse
-
-  - name: MySQL
-    package: mysqlclient
-    required_libs:
-      - default-libmysqlclient-dev
-      - python-mysqldb
-
-  - name: Oracle
-    package: cx_Oracle
-
-  - name: PostgreSQL
-    package: psycopg2-binary
-
-  - name: Presto
-    package: pyhive
+  # - name: Apache-Athena
+  #   package:
+  #     - name: PyAthenaJDBC
+  #       version: ">1.0.9"
+  #     - name: PyAthena
+  #       version: ">1.2.0"
 
   # - name: Amazon Redshift
-  #   package: sqlalchemy-redshift
+  #   package: 
+  #     - name: sqlalchemy-redshift
 
   # - name: Apache Drill
-  #   package: sqlalchemy-drill
+  #   package:
+  #     - name: sqlalchemy-drill
 
   # - name: Apache Druid
-  #   package: pydruid
+  #   package:
+  #     - name: pydruid
 
   # - name: Apache Hive
-  #   package: pyhive
+  #   package:
+  #     - name: pyhive
 
   # - name: Apache Impala
-  #   package: impala
+  #   package:
+  #     - name: impala
 
   # - name: Apache Kylin
-  #   package: kylinpy
+  #   package:
+  #     - name: kylinpy
 
   # - name: Apache Pinot
-  #   package: pinotdb
+  #   package:
+  #     - name: pinotdb
+
+  # - name: Apache Solr
+  #   package:
+  #     - name: sqlalchemy-solr
 
   # - name: Apache Spark SQL
-  #   package: pyhive
+  #   package:
+  #     - name: pyhive
+
+  # - name: Azure MS SQL
+  #   package:
+  #     - name: pymssql
 
   # - name: Big Query
-  #   package: pybigquery
+  #   package:
+  #     - name: pybigquery
+
+  # - name: ClickHouse
+  #   package:
+  #     - name: clickhouse-driver
+  #       version: 0.2.0
+  #     - name: clickhouse-sqlalchemy
+  #       version: 0.1.6
 
   # - name: CrockroachDB
-  #   package: cockroachdb
+  #   package:
+  #     - name: cockroachdb
 
   # - name: Dremio
-  #   package: sqlalchemy_dremio
+  #   package:
+  #     - name: sqlalchemy_dremio
 
   # - name: Elasticsearch
-  #   package: sqlalchemy-exasol
+  #   package:
+  #     - name: elasticsearch-dbapi
 
   # - name: Exasol
-  #   package: sqlalchemy-exasol
+  #   package:
+  #     - name: sqlalchemy-exasol
 
   # - name: Google Sheets
-  #   package: gsheetsdb
+  #   package:
+  #     - name: shillelagh[gsheetsapi]
+
+  # - name: Hologres
+  #   package:
+  #     - name: psycopg2
 
   # - name: IBM Db2
-  #   package: ibm_db_sa
+  #   package:
+  #     - name: ibm_db_sa
+
+  # - name: MySQL
+  #   package:
+  #       - name: mysqlclient
+  #   required_libs:
+  #     - default-libmysqlclient-dev
+  #     - python-mysqldb
+
+  # - name: Oracle
+  #   package:
+  #     - name: cx_Oracle
+
+  # - name: PostgreSQL
+  #   package:
+  #     - name: psycopg2-binary
+
+  # - name: Trino
+  #   package:
+  #     - name: sqlalchemy-trino
+
+  # - name: Presto
+  #   package:
+  #     - name: pyhive
 
   # - name: SAP Hana
-  #   package: sqlalchemy-hana
+  #   package:
+  #     - name: sqlalchemy-hana
 
   # - name: Snowflake
-  #   package: snowflake-sqlalchemy
+  #   package:
+  #     - name: snowflake-sqlalchemy
 
   # - name: SQL Server
-  #   package: pymssql
+  #   package:
+  #     - name: pymssql
 
   # - name: Teradata
-  #   package: sqlalchemy-teradata
+  #   package:
+  #     - name: sqlalchemy-teradata
 
   # - name: Vertica
-  #   package: sqlalchemy- vertica-python
+  #   package:
+  #     - name: sqlalchemy-vertica-python
 
 # Documentation
 superset_documentation_link: https://superset.incubator.apache.org/docs/intro
@@ -187,17 +237,20 @@ superset_services:
       - "--with-threads"
       - "--reload"
       # - "--debugger"
-  flower:
-    service_name: "{{ superset_app_name }}-flower"
+  celery_flower:
+    service_name: celery-flower
     enabled: false
     running: false
     state: started
     path: services/superset-flower.service.j2
     check_num_retries: 10
     check_start_delay: 10
-    health_url: ""
+    health_url: "http://{{ superset_webserver_address }}:{{ superset_celery_flower_port }}/healthcheck"
     doc_url: "https://apache-superset.readthedocs.io/en/latest/installation.html#celery-flower"
-    run_options: []
+    run_options:
+      - "--app={{ superset_app_name }}.tasks.celery_app:app"
+      - "--port={{ superset_celery_flower_port }}"
+      # - "--detach"
   celery_worker:
     service_name: celery-worker
     enabled: false
@@ -206,7 +259,7 @@ superset_services:
     path: services/celery-worker.service.j2
     check_num_retries: 10
     check_start_delay: 10
-    health_url: ""
+    health_url:
     doc_url: "https://docs.celeryproject.org/en/stable/reference/cli.html#celery-worker"
     run_options:
       - "--app={{ superset_app_name }}.tasks.celery_app:app"
@@ -223,7 +276,7 @@ superset_services:
     path: services/celery-beat.service.j2
     check_num_retries: 10
     check_start_delay: 10
-    health_url: ""
+    health_url:
     doc_url: "https://docs.celeryproject.org/en/stable/reference/cli.html#celery-beat"
     run_options:
       - "--app={{ superset_app_name }}.tasks.celery_app:app"
