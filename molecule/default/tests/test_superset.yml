@@ -47,5 +47,5 @@ file:
     contains:
       - "/^APP_NAME\\s*=\\s.+/"
       - "/^SUPERSET_WEBSERVER_PORT\\s*=\\s\\d+/"
-      - "/^SECRET_KEY\\s*=\\s'.+'/"
-      - "/^SQLALCHEMY_DATABASE_URI\\s*=\\s'.+'/"
+      - "/^SECRET_KEY\\s*=\\s\\\".+\\\"/"
+      - "/^SQLALCHEMY_DATABASE_URI\\s*=\\s\\\".+\\\"/"

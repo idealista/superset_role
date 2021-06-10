@@ -90,7 +90,7 @@ superset_required_python_packages:
   #       version: ">1.2.0"
 
   # - name: Amazon Redshift
-  #   package: 
+  #   package:
   #     - name: sqlalchemy-redshift
 
   # - name: Apache Drill
