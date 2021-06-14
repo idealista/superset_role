@@ -322,6 +322,16 @@ FEATURE_FLAGS = {
     # for report with type 'report' still send with email and slack message with
     # screenshot and link
     "ALERTS_ATTACH_REPORTS": {{ superset_alerts_attach_reports }},
+    # Enabling FORCE_DATABASE_CONNECTIONS_SSL forces all database connections to be
+    # encrypted before being saved into superset metastore.
+    "FORCE_DATABASE_CONNECTIONS_SSL": {{ superset_force_database_connections_ssl }},
+
+    # Optional user added vars
+    {% if superset_feature_flags_extra is defined %}{% for option in superset_feature_flags_extra %}
+    {% if option %}"{{ option.name }}": {{option.value}},{% endif %}
+
+    {% endfor %}{% endif %}
+
 }
 
 # EXTRA_CATEGORICAL_COLOR_SCHEMES is used for adding custom categorical color schemes

@@ -9,6 +9,6 @@
 SUPERSET_HOME={{ superset_app_home }}
 SUPERSET_CONFIG_PATH={{ superset_config_file_path }}
 PYTHONPATH={{ superset_config_file_path }}:${PYTHONPATH}
-PATH={{ superset_bin_path }}:${PATH}
+PATH={{ superset_bin_path }}:{{ superset_chromedriver_dir }}:{{superset_geckodriver_dir }}:${PATH}
 
 HOSTALIASES=/etc/host.aliases

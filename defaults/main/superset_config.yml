@@ -283,6 +283,20 @@ superset_enable_explore_drag_and_drop: False
 # screenshot and link
 superset_alerts_attach_reports: True
 
+# Enabling FORCE_DATABASE_CONNECTIONS_SSL forces all database connections to be
+# encrypted before being saved into superset metastore.
+superset_force_database_connections_ssl: False
+
+# Optional user added vars to FEATURE FLAGS
+# superset_feature_flags_extra:
+#   - name: TEST
+#     value: False
+
+#   - name: FOO
+#     value: "\"bar\""
+
+# [END FEATURE_FLAGS]
+
 # [ Color schemes ]
 # EXTRA_CATEGORICAL_COLOR_SCHEMES is used for adding custom categorical color schemes
 # example code for "My custom warm to hot" color scheme
@@ -329,7 +343,7 @@ superset_extra_sequential_color_schemes:
 
 superset_thumbnail_selenium_user: admin
 superset_thumbnail_cache_config: {
-  "CACHE_TYPE": "simple",
+  "CACHE_TYPE": "null",
   "CACHE_NO_NULL_WARNING": True,
 }
 
@@ -357,10 +371,10 @@ superset_img_size:
 superset_cache_default_timeout: 60 * 60 * 24  # 1 day
 
 # Default cache for Superset objects
-superset_cache_config: {"CACHE_TYPE": "simple"}
+superset_cache_config: {"CACHE_TYPE": "null"}
 
 # Cache for datasource metadata and query results
-superset_data_cache_config: {"CACHE_TYPE": "simple"}
+superset_data_cache_config: {"CACHE_TYPE": "null"}
 
 # store cache keys by datasource UID (via CacheKey) for custom processing/invalidation
 superset_store_cache_keys_in_metadata_db: False
@@ -471,29 +485,29 @@ superset_celery_result_backend: db+sqlite:///celery_results.sqlite
 superset_celeryd_log_level: DEBUG
 superset_celeryd_prefetch_multiplier: 1
 superset_celery_acks_late: False
-superset_celery_annotations: {
-  "sql_lab.get_sql_results": {"rate_limit": "100/s"},
-  "email_reports.send": {
-    "rate_limit": "1/s",
-    "time_limit": 120,
-    "soft_time_limit": 150,
-    "ignore_result": True,
+superset_celery_annotations: "{
+  'sql_lab.get_sql_results': {'rate_limit': '100/s'},
+  'email_reports.send': {
+    'rate_limit': '1/s',
+    'time_limit': 120,
+    'soft_time_limit': 150,
+    'ignore_result': True,
   },
-}
-superset_celerybeat_schedule: {
-  "email_reports.schedule_hourly": {
-    "task": "email_reports.schedule_hourly",
-    "schedule": crontab(minute=1, hour="*"),
+}"
+superset_celerybeat_schedule: "{
+  'email_reports.schedule_hourly': {
+    'task': 'email_reports.schedule_hourly',
+    'schedule': crontab(minute=1, hour='*'),
   },
-  "reports.scheduler": {
-    "task": "reports.scheduler",
-    "schedule": crontab(minute="*", hour="*"),
+  'reports.scheduler': {
+    'task': 'reports.scheduler',
+    'schedule': crontab(minute='*', hour='*'),
   },
-  "reports.prune_log": {
-    "task": "reports.prune_log",
-    "schedule": crontab(minute=0, hour=0),
+  'reports.prune_log': {
+    'task': 'reports.prune_log',
+    'schedule': crontab(minute=0, hour=0),
   },
-}
+}"
 
 # Set celery config to None to disable all the above configuration
 superset_celery_config: CeleryConfig
@@ -631,10 +645,10 @@ superset_email_notifications: False  # all the emails are sent using dryrun
 superset_smtp_host: "localhost"
 superset_smtp_starttls: True
 superset_smtp_ssl: False
-superset_smtp_user: "superset"
+superset_smtp_user:
+superset_smtp_password:
 superset_smtp_port: 25
-superset_smtp_password: "superset"
-superset_smtp_mail_from: "superset@superset.com"
+superset_smtp_mail_from:
 
 superset_enable_chunk_encoding: False
 
@@ -740,28 +754,34 @@ superset_machine_auth_provider_class: "superset.utils.machine_auth.MachineAuthPr
 superset_webdriver_type: chrome
 
 # Window size - this will impact the rendering of the data
-superset_webdriver_window: {"dashboard": (1600, 2000), "slice": (3000, 1200)}
+superset_webdriver_window: "{'dashboard': (1600, 2000), 'slice': (3000, 1200)}"
 
 # An optional override to the default auth hook used to provide auth to the
 # offline webdriver
 superset_webdriver_auth_func: None
 
 # Any config options to be passed as-is to the webdriver
-superset_webdriver_configuration: {}
+superset_webdriver_configuration: '{"service_log_path": "/dev/null"}'
 
 # Additional args to be passed as arguments to the config object
 # Note: these options are Chrome-specific. For FF, these should
 # only include the "--headless" arg
+# Chrome
 superset_webdriver_option_args: [
+  "--headless",
+  "--no-sandbox",
+  "--marionette",
   "--force-device-scale-factor=2.0",
   "--high-dpi-support=2.0",
-  "--headless",
   "--disable-gpu",
   "--disable-dev-shm-usage",
-  "--no-sandbox",
   "--disable-setuid-sandbox",
   "--disable-extensions",
 ]
+# Firefox
+# superset_webdriver_option_args: [
+#   "--headless",
+# ]
 
 # The base URL to query for accessing the user interface
 superset_webdriver_baseurl: "http://{{ superset_webserver_address }}:{{ superset_webserver_port }}/"

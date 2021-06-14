@@ -28,8 +28,8 @@ superset_pidfile_folder: "/run/{{ superset_app_name }}"
 
 # Logs
 superset_log_path: "/var/log/{{ superset_app_name }}"
-superset_log_stdout: "{% if superset_log_path is defined %}file:{{ superset_log_path }}.stdout.log {% else %} journal {% endif %}"
-superset_log_stderr: "{% if superset_log_path is defined %}file:{{ superset_log_path }}.stderr.log {% else %} journal {% endif %}"
+superset_log_stdout: "{% if superset_log_path is defined %}file:{{ superset_log_path }}/{{ superset_app_name }}.stdout.log {% else %} journal {% endif %}"
+superset_log_stderr: "{% if superset_log_path is defined %}file:{{ superset_log_path }}/{{ superset_app_name }}.stderr.log {% else %} journal {% endif %}"
 
 # Installation skeleton
 superset_skeleton_paths:
@@ -281,6 +281,7 @@ superset_services:
     run_options:
       - "--app={{ superset_app_name }}.tasks.celery_app:app"
       - "--pidfile='{{ superset_pidfile_folder }}/celery-beat.pid'"
+      - "--schedule={{superset_metadatadb_path}}/celerybeat-schedule.db"
       - "--loglevel=INFO"
       - "--logfile={{ superset_log_path }}/celery-beat.log"
       # - "--detach"
@@ -312,7 +313,7 @@ superset_webdriver_type: firefox
 superset_chrome_apt_key: https://dl-ssl.google.com/linux/linux_signing_key.pub
 superset_chrome_apt_repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
 superset_chrome_lib: google-chrome-stable  # google-chrome-stable allways install the latest because google remove from the repo the oldies
-superset_chromedriver_dir: /usr/local/bin
+superset_chromedriver_dir: /usr/bin
 superset_chromedriver_url: "https://chromedriver.storage.googleapis.com"
 superset_chromedriver_file: chromedriver_linux64.zip
 

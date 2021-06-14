@@ -34,7 +34,7 @@
 
 - name: Install Chrome | Stat chromedriver
   stat:
-    path: usr/local/bin/chromedriver
+    path: "{{ superset_chromedriver_dir }}/chromedriver"
   register: chromedriver_stat
 
 - name: Install chromeDriver | Download and extract
