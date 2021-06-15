@@ -43,5 +43,4 @@
     src: "{{ superset_chromedriver_url }}/{{ chromedriver_latest.content }}/{{ superset_chromedriver_file }}"
     dest: "{{ superset_chromedriver_dir }}"
     mode: 0755
-    # owner: "{{ superset_user }}"  # TODO: Revisar si es necesario cambiar el usuario
   when: not chromedriver_stat.stat.exists

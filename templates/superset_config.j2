@@ -1,5 +1,5 @@
 from flask_appbuilder.security.manager import {{ superset_auth_type }}
-{% if superset_alert_reports %}from celery.schedules import crontab{% endif %}
+{% if superset_celerybeat_schedule != "" %}from celery.schedules import crontab{% endif %}
 
 # Realtime stats logger, a StatsD implementation exists
 # STATS_LOGGER =

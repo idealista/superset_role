@@ -18,5 +18,4 @@
     src: "{{ superset_geckodriver_url }}"
     dest: "{{ superset_geckodriver_dir }}"
     mode: 0755
-    # owner: "{{ superset_user }}"  # TODO: Revisar si es necesario cambiar el usuario
   when: not geckodriver_stat.stat.exists

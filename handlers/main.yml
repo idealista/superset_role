@@ -36,11 +36,6 @@
   command: "./{{ superset_exec_name }} db upgrade"
   args:
     chdir: "{{ superset_bin_path }}"
-  notify:
-    - "restart {{ superset_services.app.service_name }}"
-    - "restart {{ superset_services.celery_flower.service_name }}"
-    - "restart {{ superset_services.celery_worker.service_name }}"
-    - "restart {{ superset_services.celery_beat.service_name }}"
   environment:
     SUPERSET_HOME: "{{ superset_app_home }}"
     SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
@@ -49,8 +44,6 @@
   command: "./{{ superset_exec_name }} init"
   args:
     chdir: "{{ superset_bin_path }}"
-  notify:
-    - "restart {{ superset_services.app.service_name }}"
   environment:
     SUPERSET_HOME: "{{ superset_app_home }}"
     SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"

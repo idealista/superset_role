@@ -485,29 +485,31 @@ superset_celery_result_backend: db+sqlite:///celery_results.sqlite
 superset_celeryd_log_level: DEBUG
 superset_celeryd_prefetch_multiplier: 1
 superset_celery_acks_late: False
-superset_celery_annotations: "{
-  'sql_lab.get_sql_results': {'rate_limit': '100/s'},
-  'email_reports.send': {
-    'rate_limit': '1/s',
-    'time_limit': 120,
-    'soft_time_limit': 150,
-    'ignore_result': True,
-  },
-}"
-superset_celerybeat_schedule: "{
-  'email_reports.schedule_hourly': {
-    'task': 'email_reports.schedule_hourly',
-    'schedule': crontab(minute=1, hour='*'),
-  },
-  'reports.scheduler': {
-    'task': 'reports.scheduler',
-    'schedule': crontab(minute='*', hour='*'),
-  },
-  'reports.prune_log': {
-    'task': 'reports.prune_log',
-    'schedule': crontab(minute=0, hour=0),
-  },
-}"
+superset_celery_annotations:
+  "{
+    'sql_lab.get_sql_results': {'rate_limit': '100/s'},
+    'email_reports.send': {
+      'rate_limit': '1/s',
+      'time_limit': 120,
+      'soft_time_limit': 150,
+      'ignore_result': True,
+    },
+  }"
+superset_celerybeat_schedule:
+  "{
+    'email_reports.schedule_hourly': {
+      'task': 'email_reports.schedule_hourly',
+      'schedule': crontab(minute=1, hour='*'),
+    },
+    'reports.scheduler': {
+      'task': 'reports.scheduler',
+      'schedule': crontab(minute='*', hour='*'),
+    },
+    'reports.prune_log': {
+      'task': 'reports.prune_log',
+      'schedule': crontab(minute=0, hour=0),
+    },
+  }"
 
 # Set celery config to None to disable all the above configuration
 superset_celery_config: CeleryConfig
