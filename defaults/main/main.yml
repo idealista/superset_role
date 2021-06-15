@@ -14,6 +14,8 @@ superset_force_reinstall: false
 # Owner
 superset_user: superset
 superset_group: superset
+superset_shell: /usr/sbin/nologin
+superset_createhome: yes
 
 # Files and paths
 superset_app_home: "/opt/{{ superset_app_name }}"
@@ -69,7 +71,6 @@ superset_required_python_packages:
   - name: flower
 #   - name: SQLAlchemy
 #     version: 1.3.23 # Version is not mandatory
-
 #   - name: pyasn1
 #     version: 0.4.4
 
