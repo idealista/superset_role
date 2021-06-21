@@ -1,3 +1,43 @@
 ---
-superset_flask_app_secret_key: testsecretkey
+superset_python_version: 3.7
+superset_webserver_address: 0.0.0.0
+superset_webserver_port: 8088
+
+superset_secret_key: testsecretkey
 superset_private_tmp: false
+
+superset_admin_users:
+  - name: default
+    username: "admin"
+    password: "tokio-3"
+    role: "Admin"
+    firstname: "NERV"
+    lastname: "Japan"
+    email: "admin@nerv.com"
+
+superset_regular_users:
+  - name: Shinji
+    username: "shinji"
+    password: "sadBoy"
+    role: "Public"
+    firstname: "Shinji"
+    lastname: "Ikari"
+    email: "shinji@nerv.com"
+  - name: Asuka
+    username: "asuka"
+    password: "eva02!"
+    role: "Gamma"
+    firstname: "Asuka"
+    lastname: "Langley"
+    email: "asuka@nerv.com"
+
+superset_email_notifications: True
+superset_email_smtp_host: host
+superset_email_smtp_starttls: False
+superset_email_smtp_ssl: False
+superset_email_smtp_port: 25
+superset_email_smtp_user: "user"
+superset_email_smtp_password: "password"
+superset_email_smtp_mail_from: email_from@domain.com
+
+superset_webdriver_type: firefox

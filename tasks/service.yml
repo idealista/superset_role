@@ -1,28 +1,46 @@
 ---
+- name: SUPERSET | Copy Environment File
+  template:
+    src: superset-environment-file.j2
+    dest: "{{ superset_environment_file_folder }}/{{ superset_app_name }}"
+    mode: 0644
+    owner: "{{ superset_user }}"
+    group: "{{ superset_group }}"
+  tags: service
 
 - name: SUPERSET | Copy Daemon script
   template:
-    src: "{{ superset_service_template_path }}"
-    dest: "/etc/systemd/system/{{ superset_service_name }}.service"
+    src: "{{ item.value.path }}"
+    dest: "/lib/systemd/system/{{ item.value.service_name }}.service"
     mode: 0644
-    owner: root
-    group: root
+  notify: restart {{ item.value.service_name }}
+  with_dict: "{{ superset_services }}"
+  when: item.value.enabled
+  tags: service
 
 - name: SUPERSET | Configuring service
   systemd:
-    name: "{{ superset_service_name }}"
-    state: "{{ superset_service_state }}"
-    enabled: "{{ superset_service_enabled }}"
-    daemon_reload: yes
+    name: "{{ item.value.service_name }}"
+    state: "{{ item.value.state }}"
+    enabled: "{{ item.value.enabled }}"
+    daemon_reload: true
+  with_dict: "{{ superset_services }}"
+  when: item.value.enabled
+  tags: service
 
 - name: SUPERSET | Wait for service health OK
   uri:
-    url: "{{ superset_health_url }}"
+    url: "{{ item.value.health_url | default(omit) }}"
     status_code: 200
-  retries: "{{ superset_check_wait_num_retries }}"
-  delay: "{{ superset_check_start_delay }}"
+  retries: "{{ item.value.check_num_retries }}"
+  delay: "{{ item.value.check_start_delay }}"
   register: result
   until: result.status in [200]
   changed_when: false
+  with_dict: "{{ superset_services }}"
   when:
-    - superset_service_state == 'started'
+    - item.value.state == 'started'
+    - item.value.enabled
+    - item.value.running
+    - item.value.health_url
+  tags: service

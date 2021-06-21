@@ -1,0 +1,21 @@
+---
+# Install firefox-esr which has extendend support
+- name: Install Firefox-ESR | Ensure {{ superset_firefox_lib }} is installed
+  apt:
+    name: "{{ superset_firefox_lib }}"
+    state: present
+    update_cache: true
+
+# Install geckodriver
+- name: Install geckodriver | Stat geckodriver
+  stat:
+    path: "{{ superset_geckodriver_dir }}/geckodriver"
+  register: geckodriver_stat
+
+- name: Install geckodriver | Download and extract
+  unarchive:
+    remote_src: true
+    src: "{{ superset_geckodriver_url }}"
+    dest: "{{ superset_geckodriver_dir }}"
+    mode: 0755
+  when: not geckodriver_stat.stat.exists

@@ -1,0 +1,325 @@
+---
+
+# General
+# Version
+superset_package: apache-superset
+superset_version: 1.1.0
+superset_python_version:
+superset_release_system: linux_amd64
+superset_exec_name: superset
+
+# Set true to force the download and installation of the binary
+superset_force_reinstall: false
+
+# Owner
+superset_user: superset
+superset_group: superset
+superset_shell: /usr/sbin/nologin
+superset_createhome: yes
+
+# Files and paths
+superset_app_home: "/opt/{{ superset_app_name }}"
+superset_user_home: "/var/lib/{{ superset_user }}"
+superset_bin_path: "{{ superset_app_home }}/bin"
+superset_python_path: "{{ superset_app_home }}/lib/python{{ superset_python_version }}"
+superset_metadatadb_path: "/var/lib/{{ superset_app_name }}/db"
+superset_conf_path: "/etc/{{ superset_app_name }}"
+superset_config_file_path: "{{ superset_conf_path }}/superset_config.py"
+superset_environment_file_folder: /etc/sysconfig
+superset_pidfile_folder: "/run/{{ superset_app_name }}"
+
+# Logs
+superset_log_path: "/var/log/{{ superset_app_name }}"
+superset_log_stdout: "{% if superset_log_path is defined %}file:{{ superset_log_path }}/{{ superset_app_name }}.stdout.log {% else %} journal {% endif %}"
+superset_log_stderr: "{% if superset_log_path is defined %}file:{{ superset_log_path }}/{{ superset_app_name }}.stderr.log {% else %} journal {% endif %}"
+
+# Installation skeleton
+superset_skeleton_paths:
+  - "{{ superset_app_home }}"
+  - "{{ superset_user_home }}"
+  - "{{ superset_conf_path }}"
+  - "{{ superset_log_path }}"
+  - "{{ superset_upload_folder }}"
+  - "{{ superset_img_upload_folder }}"
+  - "{{ superset_metadatadb_path }}"
+  - "{{ superset_environment_file_folder }}"
+  - "{{ superset_pidfile_folder }}"
+
+# Libs & packages
+superset_required_libs:
+  - build-essential
+  - unzip
+  - gcc
+  - g++
+  - libssl-dev
+  - libffi-dev
+  - libsasl2-dev
+  - libldap2-dev
+  - libcurl4-openssl-dev
+  - libssl-dev
+  - python3
+  - python-dev
+  - python3-dev
+  - python3-pip
+  - python3-setuptools
+
+superset_global_required_pip_packages:
+  - name: virtualenv
+    # version: 20.4.6
+
+superset_required_python_packages:
+  - name: flower
+#   - name: SQLAlchemy
+#     version: 1.3.23 # Version is not mandatory
+#   - name: pyasn1
+#     version: 0.4.4
+
+# superset_additional_python_packages:
+#   - name: plotly
+#   - name: pystan
+#     version: 2.19.1.1
+#   - name: prophet
+
+# Override superset_db_drivers var as you need
+# superset_db_drivers:
+
+  # - name: Apache-Athena
+  #   package:
+  #     - name: PyAthenaJDBC
+  #       version: ">1.0.9"
+  #     - name: PyAthena
+  #       version: ">1.2.0"
+
+  # - name: Amazon Redshift
+  #   package:
+  #     - name: sqlalchemy-redshift
+
+  # - name: Apache Drill
+  #   package:
+  #     - name: sqlalchemy-drill
+
+  # - name: Apache Druid
+  #   package:
+  #     - name: pydruid
+
+  # - name: Apache Hive
+  #   package:
+  #     - name: pyhive
+
+  # - name: Apache Impala
+  #   package:
+  #     - name: impala
+
+  # - name: Apache Kylin
+  #   package:
+  #     - name: kylinpy
+
+  # - name: Apache Pinot
+  #   package:
+  #     - name: pinotdb
+
+  # - name: Apache Solr
+  #   package:
+  #     - name: sqlalchemy-solr
+
+  # - name: Apache Spark SQL
+  #   package:
+  #     - name: pyhive
+
+  # - name: Azure MS SQL
+  #   package:
+  #     - name: pymssql
+
+  # - name: Big Query
+  #   package:
+  #     - name: pybigquery
+
+  # - name: ClickHouse
+  #   package:
+  #     - name: clickhouse-driver
+  #       version: 0.2.0
+  #     - name: clickhouse-sqlalchemy
+  #       version: 0.1.6
+
+  # - name: CrockroachDB
+  #   package:
+  #     - name: cockroachdb
+
+  # - name: Dremio
+  #   package:
+  #     - name: sqlalchemy_dremio
+
+  # - name: Elasticsearch
+  #   package:
+  #     - name: elasticsearch-dbapi
+
+  # - name: Exasol
+  #   package:
+  #     - name: sqlalchemy-exasol
+
+  # - name: Google Sheets
+  #   package:
+  #     - name: shillelagh[gsheetsapi]
+
+  # - name: Hologres
+  #   package:
+  #     - name: psycopg2
+
+  # - name: IBM Db2
+  #   package:
+  #     - name: ibm_db_sa
+
+  # - name: MySQL
+  #   package:
+  #       - name: mysqlclient
+  #   required_libs:
+  #     - default-libmysqlclient-dev
+  #     - python-mysqldb
+
+  # - name: Oracle
+  #   package:
+  #     - name: cx_Oracle
+
+  # - name: PostgreSQL
+  #   package:
+  #     - name: psycopg2-binary
+
+  # - name: Trino
+  #   package:
+  #     - name: sqlalchemy-trino
+
+  # - name: Presto
+  #   package:
+  #     - name: pyhive
+
+  # - name: SAP Hana
+  #   package:
+  #     - name: sqlalchemy-hana
+
+  # - name: Snowflake
+  #   package:
+  #     - name: snowflake-sqlalchemy
+
+  # - name: SQL Server
+  #   package:
+  #     - name: pymssql
+
+  # - name: Teradata
+  #   package:
+  #     - name: sqlalchemy-teradata
+
+  # - name: Vertica
+  #   package:
+  #     - name: sqlalchemy-vertica-python
+
+# Documentation
+superset_documentation_link: https://superset.incubator.apache.org/docs/intro
+
+# Maximum number of files limit
+superset_max_files: 32768
+
+# Service
+superset_private_tmp: false
+
+superset_services:
+  app:
+    service_name: "{{ superset_app_name }}"
+    enabled: true
+    running: true
+    state: started
+    path: services/superset.service.j2
+    check_num_retries: 10
+    check_start_delay: 10
+    health_url: "http://{{ superset_webserver_address }}:{{ superset_webserver_port }}/health"
+    doc_url: "{{ superset_documentation_link }}"
+    run_options:
+      - "-p {{ superset_webserver_port }}"
+      - "-h '{{ superset_webserver_address }}'"
+      - "--with-threads"
+      - "--reload"
+      # - "--debugger"
+  celery_flower:
+    service_name: celery-flower
+    enabled: false
+    running: false
+    state: started
+    path: services/superset-flower.service.j2
+    check_num_retries: 10
+    check_start_delay: 10
+    health_url: "http://{{ superset_webserver_address }}:{{ superset_celery_flower_port }}/healthcheck"
+    doc_url: "https://apache-superset.readthedocs.io/en/latest/installation.html#celery-flower"
+    run_options:
+      - "--app={{ superset_app_name }}.tasks.celery_app:app"
+      - "--port={{ superset_celery_flower_port }}"
+      # - "--detach"
+  celery_worker:
+    service_name: celery-worker
+    enabled: false
+    running: false
+    state: started
+    path: services/celery-worker.service.j2
+    check_num_retries: 10
+    check_start_delay: 10
+    health_url:
+    doc_url: "https://docs.celeryproject.org/en/stable/reference/cli.html#celery-worker"
+    run_options:
+      - "--app={{ superset_app_name }}.tasks.celery_app:app"
+      - "--pool=prefork -O fair --pool=prefork"
+      - "--max-tasks-per-child=20"
+      - "--pidfile='{{ superset_pidfile_folder }}/celery-worker.pid'"
+      - "--logfile={{ superset_log_path }}/celery-worker.log"
+      # - "--detach"
+  celery_beat:
+    service_name: celery-beat
+    enabled: false
+    running: false
+    state: started
+    path: services/celery-beat.service.j2
+    check_num_retries: 10
+    check_start_delay: 10
+    health_url:
+    doc_url: "https://docs.celeryproject.org/en/stable/reference/cli.html#celery-beat"
+    run_options:
+      - "--app={{ superset_app_name }}.tasks.celery_app:app"
+      - "--pidfile='{{ superset_pidfile_folder }}/celery-beat.pid'"
+      - "--schedule={{superset_metadatadb_path}}/celerybeat-schedule.db"
+      - "--loglevel=INFO"
+      - "--logfile={{ superset_log_path }}/celery-beat.log"
+      # - "--detach"
+
+# Users
+# Superset Admin users
+superset_admin_users:
+  - name:
+    username:
+    password:
+    role:
+    email:
+    firstname:
+    lastname:
+
+# Superset regular users
+# superset_regular_users:
+#   - name:
+#     username:
+#     password:
+#     role:
+#     email:
+#     firstname:
+#     lastname:
+
+superset_webdriver_type: firefox
+
+# Chrome and chromeDriver
+superset_chrome_apt_key: https://dl-ssl.google.com/linux/linux_signing_key.pub
+superset_chrome_apt_repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+superset_chrome_lib: google-chrome-stable  # google-chrome-stable allways install the latest because google remove from the repo the oldies
+superset_chromedriver_dir: /usr/bin
+superset_chromedriver_url: "https://chromedriver.storage.googleapis.com"
+superset_chromedriver_file: chromedriver_linux64.zip
+
+# Firefox-ESR and geckodriver
+superset_firefox_lib: firefox-esr
+superset_geckodriver_version: 0.29.1
+superset_geckodriver_dir: /usr/bin
+superset_geckodriver_url: "https://github.com/mozilla/geckodriver/releases/download/v{{ superset_geckodriver_version }}/geckodriver-v{{ superset_geckodriver_version }}-linux64.tar.gz"
