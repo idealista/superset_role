@@ -12,17 +12,16 @@ user:
     exists: true
     groups:
       - {{ superset_group }}
-    shell: /usr/sbin/nologin
 group:
   {{ superset_group }}:
     exists: true
 port:
-  tcp:{{ superset_port }}:
+  tcp:{{ superset_webserver_port }}:
     listening: true
     ip:
-      - {{ superset_address }}
+      - {{ superset_webserver_address }}
 http:
-  {{ superset_health_url }}:
+  {{ superset_services.app.health_url }}:
     status: 200
 file:
   {{ superset_bin_path }}:
@@ -46,7 +45,7 @@ file:
     owner: {{ superset_user }}
     group: {{ superset_group }}
     contains:
-      - "/APP_NAME\\s*=\\s.+/"
-      - "/SUPERSET_WEBSERVER_PORT\\s*=\\s\\d+/"
-      - "/SECRET_KEY\\s*=\\s'.+'/"
-      - "/SQLALCHEMY_DATABASE_URI\\s*=\\s'.+'/"
+      - "/^APP_NAME\\s*=\\s.+/"
+      - "/^SUPERSET_WEBSERVER_PORT\\s*=\\s\\d+/"
+      - "/^SECRET_KEY\\s*=\\s\\\".+\\\"/"
+      - "/^SQLALCHEMY_DATABASE_URI\\s*=\\s\\\".+\\\"/"

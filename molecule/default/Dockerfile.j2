@@ -10,7 +10,3 @@ FROM {{ item.image }}
 RUN apt-get update && \
     apt-get install -y python sudo bash ca-certificates iproute2 systemd systemd-sysv python-pip && \
     apt-get clean
-
-EXPOSE 8088/tcp
-EXPOSE 5000/tcp
-EXPOSE 8081/tcp

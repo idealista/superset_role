@@ -3,3 +3,6 @@
   hosts: superset_group
   roles:
     - role: superset_role
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"

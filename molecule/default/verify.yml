@@ -17,7 +17,8 @@
     goss_format: documentation
 
   vars_files:
-    - ../../defaults/main.yml
+    - ../../defaults/main/main.yml
+    - ../../defaults/main/superset_config.yml
 
   tasks:
     - name: Download and install Goss
