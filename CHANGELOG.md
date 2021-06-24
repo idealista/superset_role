@@ -4,7 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 ## [Unreleased](https://github.com/idealista/superset_role/tree/develop)
 
+## [1.1.1](https://github.com/idealista/superset_role/tree/1.1.1) (2021-06-24)
+
+[Full Changelog](https://github.com/idealista/superset_role/compare/1.1.0...1.1.1)
+
+### :hammer_and_wrench: Fixed
+
+- Fix template path name for celery-flower service
+
 ## [1.1.0](https://github.com/idealista/superset_role/tree/1.1.0) (2021-06-21)
+
 [Full Changelog](https://github.com/idealista/superset_role/compare/1.0.1...1.1.0)
 
 - Many (good) changes
@@ -38,6 +47,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 - Bump Changelog
 
 ### :hammer_and_wrench: Fixed
+
 - Fix typo README.md
 
 ### :arrows_clockwise: Changed
@@ -52,11 +62,15 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 - Install chrome and chormedriver for reports
 
 ## [1.0.1](https://github.com/idealista/superset_role/tree/1.0.0) (2020-10-28)
+
 [Full Changelog](https://github.com/idealista/superset_role/compare/1.0.0...1.0.1)
+
 ### :hammer_and_wrench: Fixed
+
 - *[#3](https://github.com/idealista/superset_role/issues/3)* Fix updating config files @frantsao
 
 ## [1.0.0](https://github.com/idealista/superset_role/tree/1.0.0) (2020-10-19)
 
 ### :heavy_plus_sign: Added
+
 - *First release* @ultraheroe
