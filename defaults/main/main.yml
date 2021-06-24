@@ -243,7 +243,7 @@ superset_services:
     enabled: false
     running: false
     state: started
-    path: services/superset-flower.service.j2
+    path: services/celery-flower.service.j2
     check_num_retries: 10
     check_start_delay: 10
     health_url: "http://{{ superset_webserver_address }}:{{ superset_celery_flower_port }}/healthcheck"
