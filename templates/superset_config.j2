@@ -1,5 +1,11 @@
+{{ ansible_managed | comment }}
+
 from flask_appbuilder.security.manager import {{ superset_auth_type }}
 {% if superset_celerybeat_schedule != "" %}from celery.schedules import crontab{% endif %}
+
+# User Custom imports
+{% for import in superset_config_custom_imports %}{{ import }}
+{% endfor %}
 
 # Realtime stats logger, a StatsD implementation exists
 # STATS_LOGGER =
@@ -157,7 +163,7 @@ AUTH_TYPE = {{ superset_auth_type }}
 
 # Will allow user self registration
 # AUTH_USER_REGISTRATION = True
-{% if superset_auth_user_registration %}AUTH_USER_REGISTRATION = {{ superset_auth_user_registration }}{% endif %}
+{% if superset_auth_user_registration is defined %}AUTH_USER_REGISTRATION = {{ superset_auth_user_registration }}{% endif %}
 
 # The default user self registration role
 # AUTH_USER_REGISTRATION_ROLE = "Public"
@@ -533,7 +539,7 @@ QUERY_LOGGER = {{ superset_query_logger }}
 
 # Set this API key to enable Mapbox visualizations
 # MAPBOX_API_KEY = 
-{% if superset_mapbox_api_key %}MAPBOX_API_KEY = {{ superset_mapbox_api_key }}{% endif %}
+{% if superset_mapbox_api_key %}MAPBOX_API_KEY = "{{ superset_mapbox_api_key }}"{% endif %}
 
 # Maximum number of rows returned from a database
 # in async mode, no more than SQL_MAX_ROW will be returned and stored
