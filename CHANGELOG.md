@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 ## [Unreleased](https://github.com/idealista/superset_role/tree/develop)
 
+## [1.2.0](https://github.com/idealista/superset_role/tree/1.2.0) (2021-07-01)
+
+[Full Changelog](https://github.com/idealista/superset_role/compare/1.1.1...1.2.0)
+
 ### :heavy_plus_sign: Added
 
 - Option to add custom imports in superset_config.py
