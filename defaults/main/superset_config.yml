@@ -2,6 +2,9 @@
 
 # superset_config.py
 
+# User Custom imports
+superset_config_custom_imports: []
+
 superset_stats_logger:
 superset_event_logger:
 superset_log_view: True
