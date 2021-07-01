@@ -1,5 +1,11 @@
+{{ ansible_managed | comment }}
+
 from flask_appbuilder.security.manager import {{ superset_auth_type }}
 {% if superset_celerybeat_schedule != "" %}from celery.schedules import crontab{% endif %}
+
+# User Custom imports
+{% for import in superset_config_custom_imports %}{{ import }}
+{% endfor %}
 
 # Realtime stats logger, a StatsD implementation exists
 # STATS_LOGGER =
