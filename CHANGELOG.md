@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 - Option to add custom imports in superset_config.py
 
+### :hammer_and_wrench: Fixed
+
+- Fix typo missing quotation for mapbox token in superset_config template
+- Use auth user registration when defined (no boolean evaluated)
+
 ## [1.1.1](https://github.com/idealista/superset_role/tree/1.1.1) (2021-06-24)
 
 [Full Changelog](https://github.com/idealista/superset_role/compare/1.1.0...1.1.1)
