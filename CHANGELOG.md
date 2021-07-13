@@ -4,6 +4,19 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 ## [Unreleased](https://github.com/idealista/superset_role/tree/develop)
 
+## [1.2.1](https://github.com/idealista/superset_role/tree/1.2.1) (2021-07-13)
+
+[Full Changelog](https://github.com/idealista/superset_role/compare/1.2.0...1.2.1)
+
+### :arrows_clockwise: Changed
+
+- Update default superset install version to [1.2.0](https://github.com/apache/superset/releases/tag/1.2.0)
+
+### :hammer_and_wrench: Fixed
+
+- Fix wrong email configuration in molecule default scenery
+- Fixed versions of `celery` and `flower` because newer versions broke superset installation
+
 ## [1.2.0](https://github.com/idealista/superset_role/tree/1.2.0) (2021-07-01)
 
 [Full Changelog](https://github.com/idealista/superset_role/compare/1.1.1...1.2.0)
