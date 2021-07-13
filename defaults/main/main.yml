@@ -3,7 +3,7 @@
 # General
 # Version
 superset_package: apache-superset
-superset_version: 1.1.0
+superset_version: 1.2.0
 superset_python_version:
 superset_release_system: linux_amd64
 superset_exec_name: superset
@@ -68,11 +68,10 @@ superset_global_required_pip_packages:
     # version: 20.4.6
 
 superset_required_python_packages:
+  - name: celery
+    version: "!=4.4.1,<5.0.0,>=4.3.0"
   - name: flower
-#   - name: SQLAlchemy
-#     version: 1.3.23 # Version is not mandatory
-#   - name: pyasn1
-#     version: 0.4.4
+    version: 0.9.7
 
 # superset_additional_python_packages:
 #   - name: plotly

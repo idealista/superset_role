@@ -32,12 +32,12 @@ superset_regular_users:
     email: "asuka@nerv.com"
 
 superset_email_notifications: True
-superset_email_smtp_host: host
-superset_email_smtp_starttls: False
-superset_email_smtp_ssl: False
-superset_email_smtp_port: 25
-superset_email_smtp_user: "user"
-superset_email_smtp_password: "password"
-superset_email_smtp_mail_from: email_from@domain.com
+superset_smtp_host: host
+superset_smtp_starttls: False
+superset_smtp_ssl: False
+superset_smtp_port: 25
+superset_smtp_user: "user"
+superset_smtp_password: "password"
+superset_smtp_mail_from: email_from@domain.com
 
 superset_webdriver_type: firefox
