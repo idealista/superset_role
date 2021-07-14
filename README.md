@@ -80,7 +80,6 @@ Look to the defaults properties files to see the possible configuration properti
 - 🐍 Python and pip version, and install before if necessary.
 - 🚙 [Custom db drivers](#blue_car-Custom-db-drivers) In addition, superset requires additional drivers to connect to different databases [Supported Databases and Dependecies](https://superset.apache.org/docs/databases/installing-database-drivers).
 - 📦 [Additional Python packages](#package-Additional-Python-packages) with version specific like like python-ldap for example to use LDAP login
-- ⚠️ With Airflow v1.10.0, PyPi package `pyasn1` v0.4.4 is needed. See examples below
 
 ### :blue_car: Custom db drivers
 
