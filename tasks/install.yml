@@ -15,7 +15,7 @@
     createhome: "{{ superset_createhome }}"
     home: "{{ superset_user_home }}"
 
-- name: SUPERSET | Ensure airflow skeleton paths
+- name: SUPERSET | Ensure superset skeleton paths
   file:
     path: "{{ item }}"
     owner: "{{ superset_user }}"
@@ -39,6 +39,7 @@
   pip:
     name: "{{ item.name }}"
     version: "{{ item.version | default(omit) }}"
+    executable: "{{ superset_pip_executable }}"
   with_items: "{{ superset_global_required_pip_packages }}"
 
 - name: SUPERSET | Check virtualenv

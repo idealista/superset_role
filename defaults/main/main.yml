@@ -19,6 +19,7 @@ superset_createhome: yes
 
 # Files and paths
 superset_app_home: "/opt/{{ superset_app_name }}"
+superset_pip_executable: "pip3"
 superset_user_home: "/var/lib/{{ superset_user }}"
 superset_bin_path: "{{ superset_app_home }}/bin"
 superset_python_path: "{{ superset_app_home }}/lib/python{{ superset_python_version }}"
