@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 - Fix wrong email configuration in molecule default scenery
 - Fixed versions of `celery` and `flower` because newer versions broke superset installation
+- Fix pip build problems
 
 ## [1.2.0](https://github.com/idealista/superset_role/tree/1.2.0) (2021-07-01)
 
