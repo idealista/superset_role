@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a changelog](https://github.com/olivierlacan/keep-a-changelog).
 
 ## [Unreleased](https://github.com/idealista/superset_role/tree/develop)
+### :hammer_and_wrench: Fixed
+- *[#21] Fix sql lab error* @jmonterrubio
 
 ## [1.2.1](https://github.com/idealista/superset_role/tree/1.2.1) (2021-07-13)
 

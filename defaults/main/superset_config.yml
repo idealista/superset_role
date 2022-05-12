@@ -713,11 +713,6 @@ superset_dashboard_template_id: None
 # as such `create_engine(url, **params)`
 superset_db_connection_mutator: None
 
-# A function that intercepts the SQL to be executed and can alter it.
-# The use case is can be around adding some sort of comment header
-# with information such as the username and worker node information
-supserset_sql_query_mutator: None
-
 # [ Alerts & Reports]
 # Used for Alerts/Reports (Feature flask ALERT_REPORTS) to set the size for the
 # sliding cron window size, should be synced with the celery beat config minus 1 second
