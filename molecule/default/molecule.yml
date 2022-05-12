@@ -10,7 +10,7 @@ platforms:
   - name: superset
     groups:
       - superset_group
-    image: ${MOLECULE_DISTRO:-debian:buster-slim}
+    image: ${MOLECULE_DISTRO:-python:3.8-slim-buster}
     privileged: false
     capabilities:
       - SYS_ADMIN

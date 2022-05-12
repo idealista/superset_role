@@ -1,8 +1,9 @@
 ---
-superset_python_version: 3.7
+superset_python_version: 3.8
 superset_webserver_address: 0.0.0.0
 superset_webserver_port: 8088
 
+superset_prevent_unsafe_db_connections: False
 superset_secret_key: testsecretkey
 superset_private_tmp: false
 

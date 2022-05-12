@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a changelog](https://github.com/olivierlacan/keep-a-changelog).
 
 ## [Unreleased](https://github.com/idealista/superset_role/tree/develop)
+### :arrows_clockwise: Changed
+- *[#19] Support superset 1.5.0* @jmonterrubio
 
 ## [1.2.1](https://github.com/idealista/superset_role/tree/1.2.1) (2021-07-13)
 

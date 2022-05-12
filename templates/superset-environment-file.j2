@@ -4,10 +4,12 @@
 #
 # SUPERSET_HOME=
 # SUPERSET_CONFIG_PATH=
+# FLASK_APP=
 #
 
 SUPERSET_HOME={{ superset_app_home }}
 SUPERSET_CONFIG_PATH={{ superset_config_file_path }}
+FLASK_APP={{ superset_flask_app_name }}
 PYTHONPATH={{ superset_config_file_path }}:${PYTHONPATH}
 PATH={{ superset_bin_path }}:{{ superset_chromedriver_dir }}:{{superset_geckodriver_dir }}:${PATH}
 

@@ -3,8 +3,8 @@
 # General
 # Version
 superset_package: apache-superset
-superset_version: 1.2.0
-superset_python_version:
+superset_version: 1.5.0
+superset_python_version: 3.8
 superset_release_system: linux_amd64
 superset_exec_name: superset
 
@@ -28,6 +28,8 @@ superset_conf_path: "/etc/{{ superset_app_name }}"
 superset_config_file_path: "{{ superset_conf_path }}/superset_config.py"
 superset_environment_file_folder: /etc/sysconfig
 superset_pidfile_folder: "/run/{{ superset_app_name }}"
+superset_flask_app_name: superset
+# superset_local_config_folder: "{{ playbook_path }}/files"
 
 # Logs
 superset_log_path: "/var/log/{{ superset_app_name }}"
@@ -69,10 +71,14 @@ superset_global_required_pip_packages:
     # version: 20.4.6
 
 superset_required_python_packages:
-  - name: celery
-    version: "!=4.4.1,<5.0.0,>=4.3.0"
-  - name: flower
-    version: 0.9.7
+  # - name: celery
+  #   version: "!=4.4.1,<5.0.0,>=4.3.0"
+  # - name: flower
+  #   version: 0.9.7
+  - name: markupsafe
+    version: 2.0.1
+  # - name: sqlalchemy-utils
+  #   version: 0.36.8
 
 # superset_additional_python_packages:
 #   - name: plotly
