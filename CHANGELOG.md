@@ -4,7 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 ## [Unreleased](https://github.com/idealista/superset_role/tree/develop)
 ### :arrows_clockwise: Changed
+
 - *[#19] Support superset 1.5.0* @jmonterrubio
+
+### :hammer_and_wrench: Fixed
+- *[#21] Fix sql lab error* @jmonterrubio
 
 ## [1.2.1](https://github.com/idealista/superset_role/tree/1.2.1) (2021-07-13)
 
