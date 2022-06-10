@@ -53,7 +53,7 @@
   command: "virtualenv -p python{{ superset_python_version | default(omit) }} ."
   args:
     chdir: "{{ superset_app_home }}"
-  when: not virtualenv_check.stat.exists or superset_force_reinstall
+  when: not virtualenv_check.stat.exists
 
 - name: SUPERSET | Installing Superset Python dependencies
   become: true
@@ -66,7 +66,6 @@
   with_items: "{{ superset_required_python_packages }}"
   when: superset_required_python_packages is defined
   notify:
-    - superset initialize db
     - "restart {{ superset_services.app.service_name }}"
     - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
@@ -78,8 +77,8 @@
   pip:
     name: "{{ superset_package }}"
     version: "{{ superset_version }}"
-    virtualenv: "{{ superset_virtualenv_path }}"
-    virtualenv_python: "python{{ superset_python_version }}"
+    virtualenv: "{{ superset_app_home }}"
+    virtualenv_python: "python{{ superset_python_version | default(omit) }}"
     state: "forcereinstall"
   when: superset_force_reinstall
   notify:
@@ -124,7 +123,6 @@
     - package
   when: superset_db_drivers is defined
   notify:
-    - superset initialize db
     - "restart {{ superset_services.app.service_name }}"
     - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"
@@ -143,7 +141,6 @@
   register: pipadditional
   when: superset_additional_python_packages is defined
   notify:
-    - superset initialize db
     - "restart {{ superset_services.app.service_name }}"
     - "restart {{ superset_services.celery_flower.service_name }}"
     - "restart {{ superset_services.celery_worker.service_name }}"

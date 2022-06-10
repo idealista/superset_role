@@ -65,7 +65,7 @@ superset_sqlalchemy_custom_password_store: None
 #  to AES-128 under the covers using the app's SECRET_KEY as key material.
 #
 # pylint: disable=C0103
-superset_sqlalchemy_encrypted_field_type_adapter:
+superset_sqlalchemy_encrypted_field_type_adapter: ( SQLAlchemyUtilsAdapter )
 
 # The limit of queries fetched for query search
 superset_query_search_limit: 1000
@@ -74,7 +74,7 @@ superset_query_search_limit: 1000
 superset_wtf_csrf_enabled: True
 
 # Add endpoints that need to be exempt from CSRF protection
-superset_wtf_csrf_exempt_list: ["superset.views.core.log", "superset.charts.api.data"]
+superset_wtf_csrf_exempt_list: ["superset.views.core.log", "superset.views.core.explore_json", "superset.charts.api.data"]
 
 # Whether to run the web server in debug mode or not
 superset_debug: False
@@ -216,6 +216,7 @@ superset_allow_dashboard_domain_sharding: True
 # Experimental feature introducing a client (browser) cache
 superset_client_cache: False
 superset_disable_dataset_source_edit: False
+superset_druid_joins: False
 superset_dynamic_plugins: False
 
 # For some security concerns, you may need to enforce CSRF protection on
@@ -225,8 +226,11 @@ superset_dynamic_plugins: False
 # When ENABLE_EXPLORE_JSON_CSRF_PROTECTION is set to true, your users cannot
 # make GET request to explore_json. explore_json accepts both GET and POST request.
 # See `PR 7935 <https://github.com/apache/superset/pull/7935>`_ for more details.
+superset_disable_legacy_datasource_editor: True
 superset_enable_explore_json_csrf_protection: False
 superset_enable_template_processing: False
+superset_enable_template_remove_filters: False
+superset_enable_javascript_controls: False
 superset_kv_store: False
 
 # When this feature is enabled, nested types in Presto will be
@@ -374,10 +378,10 @@ superset_img_size:
 superset_cache_default_timeout: 60 * 60 * 24  # 1 day
 
 # Default cache for Superset objects
-superset_cache_config: {"CACHE_TYPE": "null"}
+superset_cache_config: {"CACHE_TYPE": "NullCache"}
 
 # Cache for datasource metadata and query results
-superset_data_cache_config: {"CACHE_TYPE": "null"}
+superset_data_cache_config: {"CACHE_TYPE": "NullCache"}
 
 # store cache keys by datasource UID (via CacheKey) for custom processing/invalidation
 superset_store_cache_keys_in_metadata_db: False

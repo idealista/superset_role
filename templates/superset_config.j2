@@ -1,6 +1,10 @@
 {{ ansible_managed | comment }}
 
 from flask_appbuilder.security.manager import {{ superset_auth_type }}
+from superset.superset_typing import CacheConfig
+from superset.utils.encrypt import SQLAlchemyUtilsAdapter
+from datetime import datetime
+
 {% if superset_celerybeat_schedule != "" %}from celery.schedules import crontab{% endif %}
 
 # User Custom imports
@@ -270,7 +274,12 @@ FEATURE_FLAGS = {
     # Experimental feature introducing a client (browser) cache
     "CLIENT_CACHE": {{ superset_client_cache }},
     "DISABLE_DATASET_SOURCE_EDIT": {{ superset_disable_dataset_source_edit }},
+    "DRUID_JOINS": {{ superset_druid_joins }},
     "DYNAMIC_PLUGINS": {{ superset_dynamic_plugins }},
+    # With Superset 2.0, we are updating the default so that the legacy datasource
+    # editor no longer shows. Currently this is set to false so that the editor
+    # option does show, but we will be depreciating it.
+    "DISABLE_LEGACY_DATASOURCE_EDITOR": {{ superset_disable_legacy_datasource_editor }},
     # For some security concerns, you may need to enforce CSRF protection on
     # all query request to explore_json endpoint. In Superset, we use
     # `flask-csrf <https://sjl.bitbucket.io/flask-csrf/>`_ add csrf protection
@@ -280,6 +289,12 @@ FEATURE_FLAGS = {
     # See `PR 7935 <https://github.com/apache/superset/pull/7935>`_ for more details.
     "ENABLE_EXPLORE_JSON_CSRF_PROTECTION": {{ superset_enable_explore_json_csrf_protection }},
     "ENABLE_TEMPLATE_PROCESSING": {{ superset_enable_template_processing }},
+    "ENABLE_TEMPLATE_REMOVE_FILTERS": {{ superset_enable_template_processing }},
+    # Allow for javascript controls components
+    # this enables programmers to customize certain charts (like the
+    # geospatial ones) by inputing javascript in controls. This exposes
+    # an XSS security vulnerability
+    "ENABLE_JAVASCRIPT_CONTROLS": {{ superset_enable_template_processing }},
     "KV_STORE": {{ superset_kv_store }},
     # When this feature is enabled, nested types in Presto will be
     # expanded into extra columns and/or arrays. This is experimental,
@@ -389,7 +404,7 @@ FEATURE_FLAGS = {
 # Also used by Alerts & Reports
 # ---------------------------------------------------
 THUMBNAIL_SELENIUM_USER = "{{ superset_thumbnail_selenium_user }}"
-THUMBNAIL_CACHE_CONFIG = {{ superset_thumbnail_cache_config }}
+THUMBNAIL_CACHE_CONFIG: CacheConfig = {{ superset_thumbnail_cache_config }}
 
 # Used for thumbnails and other api: Time in seconds before selenium
 # times out after trying to locate an element on the page and wait
@@ -418,10 +433,10 @@ IMG_UPLOAD_URL = "{{ superset_img_upload_url }}"
 CACHE_DEFAULT_TIMEOUT = {{ superset_cache_default_timeout }}
 
 # Default cache for Superset objects
-CACHE_CONFIG = {{ superset_cache_config }}
+CACHE_CONFIG: CacheConfig = {{ superset_cache_config }}
 
 # Cache for datasource metadata and query results
-DATA_CACHE_CONFIG = {{ superset_data_cache_config }}
+DATA_CACHE_CONFIG: CacheConfig = {{ superset_data_cache_config }}
 
 # store cache keys by datasource UID (via CacheKey) for custom processing/invalidation
 STORE_CACHE_KEYS_IN_METADATA_DB = {{ superset_store_cache_keys_in_metadata_db }}
@@ -567,14 +582,14 @@ SQLLAB_SCHEDULE_WARNING_MESSAGE = {{ superset_sqllab_schedule_warning_message }}
 # http://docs.celeryproject.org/en/latest/getting-started/brokers/index.html
 
 class CeleryConfig:  # pylint: disable=too-few-public-methods
-    BROKER_URL = "{{ superset_broker_url }}"
-    CELERY_IMPORTS = {{ superset_celery_imports }}
-    CELERY_RESULT_BACKEND = "{{ superset_celery_result_backend }}"
-    CELERYD_LOG_LEVEL = "{{ superset_celeryd_log_level }}"
-    CELERYD_PREFETCH_MULTIPLIER = {{ superset_celeryd_prefetch_multiplier }}
-    CELERY_ACKS_LATE = {{ superset_celery_acks_late }}
-    CELERY_ANNOTATIONS = {{ superset_celery_annotations }}
-    CELERYBEAT_SCHEDULE = {{ superset_celerybeat_schedule }}
+    broker_url = "{{ superset_broker_url }}"
+    imports = {{ superset_celery_imports }}
+    result_backend = "{{ superset_celery_result_backend }}"
+    worker_log_level = "{{ superset_celeryd_log_level }}"
+    worker_prefetch_multiplier = {{ superset_celeryd_prefetch_multiplier }}
+    task_acks_late = {{ superset_celery_acks_late }}
+    task_annotations = {{ superset_celery_annotations }}
+    beat_schedule = {{ superset_celerybeat_schedule }}
 
 
 CELERY_CONFIG = {{ superset_celery_config }}  # pylint: disable=invalid-name
@@ -765,7 +780,7 @@ FAB_ADD_SECURITY_PERMISSION_VIEWS_VIEW = {{ superset_fab_add_security_permission
 
 # The link to a page containing common errors and their resolutions
 # It will be appended at the bottom of sql_lab errors.
-TROUBLESHOOTING_LINK = "{{ superset_troubleshooting_link }}"
+# TROUBLESHOOTING_LINK = "{{ superset_troubleshooting_link }}"
 
 # CSRF token timeout, set to None for a token that never expires
 WTF_CSRF_TIME_LIMIT = {{ superset_wtf_csrf_time_limit }}
@@ -823,6 +838,9 @@ DB_CONNECTION_MUTATOR = {{ superset_db_connection_mutator }}
 #    def SQL_QUERY_MUTATOR(sql, user_name, security_manager, database):
 #        dttm = datetime.now().isoformat()
 #        return f"-- [SQL LAB] {username} {dttm}\n{sql}"
+def SQL_QUERY_MUTATOR(sql, user_name, security_manager, database):
+    dttm = datetime.now().isoformat()
+    return f"-- [SQL LAB] {user_name} {dttm}\n{sql}"
 
 # ---------------------------------------------------
 # Alerts & Reports

@@ -32,14 +32,6 @@
     - superset_services.celery_beat
     - superset_services.celery_beat.enabled
 
-- name: superset initialize db
-  command: "./{{ superset_exec_name }} db upgrade"
-  args:
-    chdir: "{{ superset_bin_path }}"
-  environment:
-    SUPERSET_HOME: "{{ superset_app_home }}"
-    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
-
 - name: superset sync db
   command: "./{{ superset_exec_name }} init"
   args:
@@ -47,3 +39,4 @@
   environment:
     SUPERSET_HOME: "{{ superset_app_home }}"
     SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+    FLASK_APP: "{{ superset_flask_app_name }}"
