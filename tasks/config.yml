@@ -1,6 +1,23 @@
 ---
 
 - name: SUPERSET | Copy superset_config file
+  copy:
+    src: "{{ superset_local_config_folder }}/superset_config.py"
+    remote_src: no
+    dest: "{{ superset_config_file_path }}"
+    mode: 0775
+    owner: "{{ superset_user }}"
+    group: "{{ superset_group }}"
+  register: superset_config
+  notify:
+    - "restart {{ superset_services.app.service_name }}"
+    - "restart {{ superset_services.celery_flower.service_name }}"
+    - "restart {{ superset_services.celery_worker.service_name }}"
+    - "restart {{ superset_services.celery_beat.service_name }}"
+  tags: config
+  when: superset_local_config_folder is defined
+
+- name: SUPERSET | Copy superset_config file
   template:
     src: superset_config.j2
     dest: "{{ superset_config_file_path }}"
@@ -14,13 +31,19 @@
     - "restart {{ superset_services.celery_worker.service_name }}"
     - "restart {{ superset_services.celery_beat.service_name }}"
   tags: config
+  when: not superset_local_config_folder is defined
 
 - name: Initialize the db
   command: "./{{ superset_exec_name }} db upgrade"
   args:
     chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+    FLASK_APP: "{{ superset_flask_app_name }}"
   register: superset_db_init
-  when: superset_install.changed or superset_config.changed  # noqa 503
+  ignore_errors: true  # it's logging the result in both std.err & std.out
+  when: superset_install.changed or superset_config.changed or superset_force_reinstall # noqa 503
   notify:
     - "restart {{ superset_services.app.service_name }}"
     - "restart {{ superset_services.celery_flower.service_name }}"
@@ -31,6 +54,10 @@
   command: "./{{ superset_exec_name }} fab list-users"
   args:
     chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+    FLASK_APP: "{{ superset_flask_app_name }}"
   register: superset_listed_users
   changed_when: false
   no_log: true
@@ -40,17 +67,25 @@
   command: "./{{ superset_exec_name }} init"
   args:
     chdir: "{{ superset_bin_path }}"
-  when: superset_install.changed or superset_config.changed  # noqa 503
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+    FLASK_APP: "{{ superset_flask_app_name }}"
+  when: superset_install.changed or superset_config.changed or superset_force_reinstall # noqa 503
   tags: config
 
 - name: SUPERSET | Create admin users
   command: "./{{ superset_exec_name }} fab create-admin --username {{ item.username }} --password {{ item.password }} --email {{ item.email }} --firstname {{ item.firstname }} --lastname {{ item.lastname }}"
   args:
     chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+    FLASK_APP: "{{ superset_flask_app_name }}"
   with_items: "{{ superset_admin_users }}"
   when: "'username:' ~ item.username not in superset_listed_users.stdout or superset_force_reinstall"
-  notify:
-    - superset sync db
+  # notify:
+  #   - superset sync db
   no_log: true
   tags: config
 
@@ -58,10 +93,14 @@
   command: "./{{ superset_exec_name }} fab create-user --username {{ item.username }} --password {{ item.password }} --role {{ item.role | default('Public') }} --email {{ item.email }} --firstname {{ item.firstname }} --lastname {{ item.lastname }}"
   args:
     chdir: "{{ superset_bin_path }}"
+  environment:
+    SUPERSET_HOME: "{{ superset_app_home }}"
+    SUPERSET_CONFIG_PATH: "{{ superset_config_file_path }}"
+    FLASK_APP: "{{ superset_flask_app_name }}"
   with_items: "{{ superset_regular_users }}"
   when: "superset_regular_users is defined and 'username:' ~ item.username not in superset_listed_users.stdout or superset_force_reinstall"
-  notify:
-    - superset sync db
+  # notify:
+  #   - superset sync db
   no_log: true
   tags: config
 
